@@ -13,8 +13,6 @@ exports.existIdCheck = async (user_id) => {
         return false;
     else
         return true;
-    
-    return idData;
 }
 
 exports.existNameCheck = async (user_name) => {
