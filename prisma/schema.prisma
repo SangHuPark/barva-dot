@@ -11,5 +11,5 @@ model users {
   user_id   String @id @db.VarChar(15)
   user_pw   String @db.VarChar(200)
   pw_salt   String @db.VarChar(200)
-  user_name String @db.VarChar(10)
+  user_name String @unique @db.VarChar(10)
 }
