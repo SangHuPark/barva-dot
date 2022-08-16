@@ -15,10 +15,10 @@ exports.existIdCheck = async (user_id) => {
         return true;
 }
 
-exports.existNameCheck = async (user_name) => {
+exports.existNickCheck = async (user_nick) => {
     const nameData = await prisma.users.findUnique({ 
         where : {
-            user_name,
+            user_nick,
         },
     });
 
@@ -30,15 +30,17 @@ exports.existNameCheck = async (user_name) => {
 
 exports.insertUser = async (newUserInfo) => {
     const {
-        user_id, hashed_pw, pw_salt, user_name
+        user_name, user_nick, user_id, hashed_pw, pw_salt, user_email
     } = newUserInfo;
 
     const newUser = await prisma.users.create({
         data: {
+            user_name,
+            user_nick,
             user_id,
             user_pw: hashed_pw,
             pw_salt,
-            user_name,
+            user_email,
         },
     })
     .then((result) => { // 회원 가입 성공 시
