@@ -39,3 +39,9 @@ exports.makePasswordHashed = async (userId, plainPassword) => {
         });
     });
 }
+
+exports.makeAuthNumber = async () => {
+    const code = crypto.randomBytes(3).toString('hex');
+
+    return code;
+}

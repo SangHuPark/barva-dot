@@ -4,8 +4,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const userService = require('../service/userService.js');
-const pwFunc = require('../function/pwFunc.js');
+const cryptoFunc = require('../function/cryptoFunc.js');
 const util = require('../function/replyFunc.js');
+const mail = require('../auth/mail.js');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -35,9 +36,9 @@ exports.enroll = async (req, res) => {
             if(nameCheck)
                 return res.json(util.makeReply(reply, false, 308, '이미 사용 중인 이름입니다.'));
             
-        const { hashed_pw, pw_salt } = await pwFunc.createHashedPassword(user_pw);
+        const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const newUserInfo = { user_id, hashed_pw, pw_salt, user_name };
-        const enrollUser = await userService.insertUser(newUserInfo);
+        await userService.insertUser(newUserInfo);
 
         return res.json(util.makeReply(reply, true, 200, '회원가입을 성공하였습니다.'));
     } catch (err) {
@@ -69,9 +70,6 @@ exports.duplicateCheck = async (req, res) => {
     } else if(req.body.user_name) {
         const user_name = req.body.user_name;
 
-        // req 타입검사
-        //if (typeof user_name !== string) return res.status(404).send('invalid username')
-
         try {
             var nameCheck = await userService.existNameCheck(user_name);
             
@@ -88,8 +86,27 @@ exports.duplicateCheck = async (req, res) => {
         return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
 }
 
+// 인증 메일 전송
+exports.sendMail = async (req, res) => {
+    const user_mail = req.body.user_mail;
+
+    var reply = {};
+    var dataReply = {};
+
+    try {
+        const authNumber = await cryptoFunc.makeAuthNumber();
+        await mail.makeMail(authNumber, user_mail);
+
+        return res.json(util.dataReply(dataReply, true, 200, "인증번호가 전송되었습니다.", { authNumber }))
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+    }
+}
+
 // 로그인
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
     const { user_id, user_pw } = req.body;
     const user_name = await userService.importUserName(user_id);
 
@@ -104,7 +121,7 @@ exports.login = async (req, res, next) => {
         if(!loginCheck)
             return res.json(util.makeReply(reply, false, 302, '등록되지 않은 회원정보입니다.')); 
 
-        var checkPw = await pwFunc.makePasswordHashed(user_id, user_pw);
+        var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
         if(checkPw !== loginCheck.user_pw)
             return res.json(util.makeReply(reply, false, 303, '비밀번호를 확인하세요.'));
 
@@ -125,7 +142,7 @@ exports.login = async (req, res, next) => {
 }
 
 // 회원탈퇴
-exports.resign = async (req, res, next) => {
+exports.resign = async (req, res) => {
     const user_pw = req.body.user_pw;
     const user_id = req.decoded.user_id;
     
@@ -133,7 +150,7 @@ exports.resign = async (req, res, next) => {
 
     try {
         var resignCheck = await userService.existIdCheck(user_id);
-        var checkPw = await pwFunc.makePasswordHashed(user_id, user_pw);
+        var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
         if(checkPw !== resignCheck.user_pw)
             return res.json(util.makeReply(reply, false, 303, '비밀번호를 확인하세요.'));
 
