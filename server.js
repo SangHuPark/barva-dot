@@ -3,11 +3,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const loginRouter = require('./routes/loginRouter.js');
-const enrollRouter = require('./routes/enrollRouter.js');
-const resignRouter = require('./routes/resignRouter.js');
-const duplicateRouter = require('./routes/duplicateRouter.js');
-const authMailRouter = require('./routes/authMailRouter.js');
+const loginRouter = require('./API/routes/loginRouter.js');
+const enrollRouter = require('./API/routes/enrollRouter.js');
+const resignRouter = require('./API/routes/resignRouter.js');
+const duplicateRouter = require('./API/routes/duplicateRouter.js');
+const authMailRouter = require('./API/routes/authMailRouter.js');
 
 const app = express();
 app.set('port', process.env.PORT || 3003);
