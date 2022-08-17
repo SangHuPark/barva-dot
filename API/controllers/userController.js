@@ -16,19 +16,18 @@ exports.enroll = async (req, res) => {
 
     var reply = {};
 
-    if(!user_name || !user_nick || !user_id || !user_pw || !user_confirmPw || !user_email)
-        return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
-    if(user_name.length > 10)
-        return res.json(util.makeReply(reply, false, 301, '정확한 성명을 입력해주시기 바랍니다.'));
-    if(user_nick.length > 15)
-        return res.json(util.makeReply(reply, false, 302, '닉네임은 15자를 초과할 수 없습니다.'));
-    if(user_id.length > 15)
-        return res.json(util.makeReply(reply, false, 303, '아이디는 15자를 초과할 수 없습니다.'));
-    if(user_pw.length < 6 || user_pw.length > 15)
-        return res.json(util.makeReply(reply, false, 304, '비밀번호는 6~15자로 입력해야 합니다.'));
-    if(user_pw !== user_confirmPw)
-        return res.json(util.makeReply(reply, false, 305, '비밀번호가 일치하지 않습니다.'));
-    // 이메일 양식 검사하는 코드 추가해야됨 : Joi 모듈 찾아볼 것 
+    // if(!user_name || !user_nick || !user_id || !user_pw || !user_confirmPw || !user_email)
+    //     return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
+    // if(user_name.length > 10)
+    //     return res.json(util.makeReply(reply, false, 301, '정확한 성명을 입력해주시기 바랍니다.'));
+    // if(user_nick.length > 15)
+    //     return res.json(util.makeReply(reply, false, 302, '닉네임은 15자를 초과할 수 없습니다.'));
+    // if(user_id.length > 15)
+    //     return res.json(util.makeReply(reply, false, 303, '아이디는 15자를 초과할 수 없습니다.'));
+    // if(user_pw.length < 6 || user_pw.length > 15)
+    //     return res.json(util.makeReply(reply, false, 304, '비밀번호는 6~15자로 입력해야 합니다.'));
+    // if(user_pw !== user_confirmPw)
+    //     return res.json(util.makeReply(reply, false, 305, '비밀번호가 일치하지 않습니다.'));
 
     try {
         var enrollIdCheck = await userService.existIdCheck(user_id);

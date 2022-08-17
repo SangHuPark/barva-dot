@@ -22,7 +22,7 @@ exports.enrollValidation = async (req, res, next) =>{
         .with('user_pw', 'user_confirmPw'); 
 
     try { // 검사 
-    	const { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email } = await enrollSchema.validateAsync(body); 
+    	await enrollSchema.validateAsync(body); 
 
         return next();
     } catch (err) { // 에러 
