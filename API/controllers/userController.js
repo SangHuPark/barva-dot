@@ -61,7 +61,7 @@ exports.duplicateCheck = async (req, res) => {
         try {
             var enrollIdCheck = await userService.existIdCheck(user_id);
             
-            if(enrollIdCheck === true) 
+            if(enrollIdCheck) 
                 return res.json(util.makeReply(reply, false, 307, '이미 사용 중인 아이디입니다.')); 
             else
                 return res.json(util.makeReply(reply, true, 200, '사용 가능한 아이디입니다.'));
@@ -76,7 +76,7 @@ exports.duplicateCheck = async (req, res) => {
         try {
             var enrollNickCheck = await userService.existNickCheck(user_nick);
             
-            if(enrollNickCheck === true)
+            if(enrollNickCheck)
                 return res.json(util.makeReply(reply, false, 308, '이미 사용 중인 이름입니다.'));
             else
                 return res.json(util.makeReply(reply, true, 200, '사용 가능한 이름입니다.'));
@@ -91,14 +91,19 @@ exports.duplicateCheck = async (req, res) => {
 
 // 인증 메일 전송
 exports.sendMail = async (req, res) => {
-    const user_mail = req.body.user_mail;
+    const user_email = req.body.user_email;
 
     var reply = {};
     var dataReply = {};
 
     try {
+        var enrollMailCheck = await userService.existMailCheck(user_email);
+            
+        if(enrollMailCheck === true) 
+            return res.json(util.makeReply(reply, false, 309, '이미 가입된 메일 정보입니다.'));
+        
         const authNumber = await cryptoFunc.makeAuthNumber();
-        await mail.makeMail(authNumber, user_mail);
+        await mail.makeMail(authNumber, user_email);
 
         return res.json(util.dataReply(dataReply, true, 200, "인증번호가 전송되었습니다.", { authNumber }))
     } catch (err) {
@@ -125,6 +130,8 @@ exports.login = async (req, res) => {
             return res.json(util.makeReply(reply, false, 311, '등록되지 않은 회원정보입니다.')); 
 
         var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
+        console.log(checkPw);
+        console.log(loginCheck.user_pw);
         if(checkPw !== loginCheck.user_pw)
             return res.json(util.makeReply(reply, false, 312, '비밀번호를 확인하세요.'));
 

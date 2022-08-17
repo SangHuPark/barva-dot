@@ -9,20 +9,27 @@ exports.existIdCheck = async (user_id) => {
         }
     });
 
-    if(!idData)
-        return false;
-    else
-        return true;
+    return idData;
 }
 
 exports.existNickCheck = async (user_nick) => {
-    const nameData = await prisma.users.findUnique({ 
+    const nickData = await prisma.users.findUnique({ 
         where : {
             user_nick,
         },
     });
 
-    if(!nameData)
+    return nickData;
+}
+
+exports.existMailCheck = async (user_email) => {
+    const mailData = await prisma.users.findUnique({
+        where : {
+            user_email,
+        },
+    });
+
+    if(!mailData)
         return false;
     else
         return true;
