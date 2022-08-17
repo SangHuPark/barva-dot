@@ -129,8 +129,6 @@ exports.login = async (req, res) => {
             return res.json(util.makeReply(reply, false, 311, '등록되지 않은 회원정보입니다.')); 
 
         var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
-        console.log(checkPw);
-        console.log(loginCheck.user_pw);
         if(checkPw !== loginCheck.user_pw)
             return res.json(util.makeReply(reply, false, 312, '비밀번호를 확인하세요.'));
 
