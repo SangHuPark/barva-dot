@@ -112,6 +112,21 @@ exports.sendMail = async (req, res) => {
     }
 }
 
+// 인증번호 확인
+exports.authUser = async (req, res) => {
+    const inspectNumber = req.body.user_auth;
+
+    var dataReply = {};
+
+    try {
+
+    } catch (err) {
+        console.log(err.message);
+
+        return res.json(util.dataReply(dataReply))
+    }
+}
+
 // 로그인
 exports.login = async (req, res) => {
     const { user_id, user_pw } = req.body;
