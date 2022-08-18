@@ -8,8 +8,10 @@ const enrollRouter = require('./API/routes/enrollRouter.js');
 const resignRouter = require('./API/routes/resignRouter.js');
 const duplicateRouter = require('./API/routes/duplicateRouter.js');
 const authMailRouter = require('./API/routes/authMailRouter.js');
+const inspectMail = require('./API/routes/inspectMailRouter.js');
 
 const app = express();
+
 app.set('port', process.env.PORT || 3003);
 
 app.use(express.json());
@@ -20,6 +22,7 @@ app.use('/enroll', enrollRouter);
 app.use('/resign', resignRouter);
 app.use('/duplicateCheck', duplicateRouter);
 app.use('/authMail', authMailRouter);
+app.use('/inspectMail', inspectMail);
 
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), "port connected!!");

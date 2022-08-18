@@ -15,6 +15,7 @@ exports.enroll = async (req, res) => {
     const { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email } = req.body;
 
     var reply = {};
+    var dataReply = {};
 
     // if(!user_name || !user_nick || !user_id || !user_pw || !user_confirmPw || !user_email)
     //     return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
@@ -32,11 +33,11 @@ exports.enroll = async (req, res) => {
     try {
         var enrollIdCheck = await userService.existIdCheck(user_id);
             if(enrollIdCheck) 
-                return res.json(util.makeReply(reply, false, 307, '이미 사용 중인 아이디입니다.'));
+                return res.json(util.makeReply(reply, false, 306, '이미 사용 중인 아이디입니다.'));
 
         var enrollNickCheck = await userService.existNickCheck(user_name);
             if(enrollNickCheck)
-                return res.json(util.makeReply(reply, false, 308, '이미 사용 중인 이름입니다.'));
+                return res.json(util.makeReply(reply, false, 307, '이미 사용 중인 이름입니다.'));
             
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email };
@@ -44,15 +45,16 @@ exports.enroll = async (req, res) => {
 
         return res.json(util.makeReply(reply, true, 200, '회원가입을 성공하였습니다.'));
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
         
-        return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
 // 중복 검사
 exports.duplicateCheck = async (req, res) => {
     var reply = {};
+    var dataReply = {};
 
     if(req.body.user_id) {
         const user_id = req.body.user_id;
@@ -61,13 +63,13 @@ exports.duplicateCheck = async (req, res) => {
             var enrollIdCheck = await userService.existIdCheck(user_id);
             
             if(enrollIdCheck) 
-                return res.json(util.makeReply(reply, false, 307, '이미 사용 중인 아이디입니다.')); 
+                return res.json(util.makeReply(reply, false, 306, '이미 사용 중인 아이디입니다.')); 
             else
                 return res.json(util.makeReply(reply, true, 200, '사용 가능한 아이디입니다.'));
         } catch (err) {
-            console.log(err);
+            console.log(err.message);
 
-            return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+            return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
         }
     } else if(req.body.user_nick) {
         const user_nick = req.body.user_nick;
@@ -76,13 +78,13 @@ exports.duplicateCheck = async (req, res) => {
             var enrollNickCheck = await userService.existNickCheck(user_nick);
             
             if(enrollNickCheck)
-                return res.json(util.makeReply(reply, false, 308, '이미 사용 중인 이름입니다.'));
+                return res.json(util.makeReply(reply, false, 307, '이미 사용 중인 이름입니다.'));
             else
                 return res.json(util.makeReply(reply, true, 200, '사용 가능한 이름입니다.'));
         } catch (err) {
-            console.log(err);
+            console.log(err.message);
 
-            return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+            return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
         }
     } else
         return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
@@ -99,31 +101,39 @@ exports.sendMail = async (req, res) => {
         var enrollMailCheck = await userService.existMailCheck(user_email);
             
         if(enrollMailCheck === true) 
-            return res.json(util.makeReply(reply, false, 309, '이미 가입된 메일 정보입니다.'));
+            return res.json(util.makeReply(reply, false, 308, '이미 가입된 메일 정보입니다.'));
         
         const authNumber = await cryptoFunc.makeAuthNumber();
         await mail.makeMail(authNumber, user_email);
+        await targetNumber(authNumber);
 
-        return res.json(util.dataReply(dataReply, true, 200, "인증번호가 전송되었습니다.", { authNumber }))
+        return res.json(util.dataReply(dataReply, true, 200, "인증번호가 전송되었습니다.", { authNumber }));
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
 
-        return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
 // 인증번호 확인
 exports.authUser = async (req, res) => {
-    const inspectNumber = req.body.user_auth;
+    const inspectNumber = req.body.inspectNumber;
 
+    const targetNumber = (authNumber) => { authNumber };
+
+    var reply = {};
     var dataReply = {};
 
     try {
+        if(inspectNumber === targetNumber)
+            res.json(util.makeReply(reply, true, 200, '인증이 완료되었습니다.'));
+        else
+            res.json(util.makeReply(reply, false, 309, '인증번호가 일치하지 않습니다.'));
 
     } catch (err) {
         console.log(err.message);
 
-        return res.json(util.dataReply(dataReply))
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -158,9 +168,9 @@ exports.login = async (req, res) => {
         
         return res.json(util.dataReply(dataReply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
 
-        return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -181,8 +191,8 @@ exports.resign = async (req, res) => {
 
         return res.json(util.makeReply(reply, true, 200, '회원탈퇴를 성공하였습니다.'));
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
 
-        return res.json(util.makeReply(reply, false, 500, 'Server error response'));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
