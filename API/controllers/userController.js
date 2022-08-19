@@ -122,14 +122,14 @@ exports.sendMail = async (req, res) => {
 
 // 인증번호 확인
 exports.authUser = async (req, res) => {
-    const { user_email, inputNumber } = req.body;
+    const { user_email, confirmNumber } = req.body;
 
     var reply = {};
     var dataReply = {};
 
     try {
         const authNumber = authCache.get(user_email);
-        if(inputNumber === authNumber)
+        if(confirmNumber === authNumber)
             res.json(util.makeReply(reply, true, 200, '인증이 완료되었습니다.'));
         else
             res.json(util.makeReply(reply, false, 309, '인증번호가 일치하지 않습니다.'));
