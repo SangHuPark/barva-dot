@@ -13,7 +13,7 @@ exports.makeMail = async (authNumber, user_mail) => {
         from: 'barvadot@gmail.com',
         to: user_mail,
         subject: '[ barvadot ] 이메일 인증번호',
-        text: '- 인증번호 : ' + authNumber
+        text: `인증번호는 ${authNumber}입니다.`
     };
 
     await smtpTransport.sendMail(mailOptions, (err) => {

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const nodeCache = require('node-cache');
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ const util = require('../function/replyFunc.js');
 const mail = require('../function/mailFunc.js');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+const authCache = new nodeCache( { stdTTL: 0, checkperiod: 600 } );
 
 // 회원가입
 exports.enroll = async (req, res) => {
@@ -94,6 +97,8 @@ exports.duplicateCheck = async (req, res) => {
 exports.sendMail = async (req, res) => {
     const user_email = req.body.user_email;
 
+    authCache.del(user_email);
+
     var reply = {};
     var dataReply = {};
 
@@ -105,7 +110,7 @@ exports.sendMail = async (req, res) => {
         
         const authNumber = await cryptoFunc.makeAuthNumber();
         await mail.makeMail(authNumber, user_email);
-        await targetNumber(authNumber);
+        authCache.set(user_email, authNumber);
 
         return res.json(util.dataReply(dataReply, true, 200, "인증번호가 전송되었습니다.", { authNumber }));
     } catch (err) {
@@ -117,15 +122,14 @@ exports.sendMail = async (req, res) => {
 
 // 인증번호 확인
 exports.authUser = async (req, res) => {
-    const inspectNumber = req.body.inspectNumber;
-
-    const targetNumber = (authNumber) => { authNumber };
+    const { user_email, inputNumber } = req.body;
 
     var reply = {};
     var dataReply = {};
 
     try {
-        if(inspectNumber === targetNumber)
+        const authNumber = authCache.get(user_email);
+        if(inputNumber === authNumber)
             res.json(util.makeReply(reply, true, 200, '인증이 완료되었습니다.'));
         else
             res.json(util.makeReply(reply, false, 309, '인증번호가 일치하지 않습니다.'));

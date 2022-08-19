@@ -35,10 +35,6 @@ exports.existMailCheck = async (user_email) => {
         return true;
 }
 
-exports.numberCheck = async (number) => {
-    var numStorage = 
-}
-
 exports.insertUser = async (newUserInfo) => {
     const {
         user_name, user_nick, user_id, hashed_pw, pw_salt, user_email
