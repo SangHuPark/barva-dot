@@ -27,11 +27,11 @@ exports.enroll = async (req, res) => {
     if(user_nick.length > 15)
         return res.json(util.makeReply(reply, false, 302, '닉네임은 15자를 초과할 수 없습니다.'));
     if(user_id.length > 15)
-    //     return res.json(util.makeReply(reply, false, 303, '아이디는 15자를 초과할 수 없습니다.'));
-    // if(user_pw.length < 6 || user_pw.length > 15)
-    //     return res.json(util.makeReply(reply, false, 304, '비밀번호는 6~15자로 입력해야 합니다.'));
-    // if(user_pw !== user_confirmPw)
-    //     return res.json(util.makeReply(reply, false, 305, '비밀번호가 일치하지 않습니다.'));
+        return res.json(util.makeReply(reply, false, 303, '아이디는 15자를 초과할 수 없습니다.'));
+    if(user_pw.length < 6 || user_pw.length > 15)
+        return res.json(util.makeReply(reply, false, 304, '비밀번호는 6~15자로 입력해야 합니다.'));
+    if(user_pw !== user_confirmPw)
+        return res.json(util.makeReply(reply, false, 305, '비밀번호가 일치하지 않습니다.'));
 
     try {
         var enrollIdCheck = await userService.existIdCheck(user_id);
