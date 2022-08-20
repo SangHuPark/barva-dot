@@ -20,9 +20,9 @@ exports.enroll = async (req, res) => {
     var reply = {};
     var dataReply = {};
 
-    // if(!user_name || !user_nick || !user_id || !user_pw || !user_confirmPw || !user_email)
-    //     return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
-    // if(user_name.length > 10)
+    if(!user_name || !user_nick || !user_id || !user_pw || !user_confirmPw || !user_email)
+        return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
+    if(user_name.length > 10)
     //     return res.json(util.makeReply(reply, false, 301, '정확한 성명을 입력해주시기 바랍니다.'));
     // if(user_nick.length > 15)
     //     return res.json(util.makeReply(reply, false, 302, '닉네임은 15자를 초과할 수 없습니다.'));
