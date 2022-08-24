@@ -19,7 +19,7 @@ exports.enrollValidation = async (req, res, next) =>{
         user_confirmPw: Joi.string().valid(Joi.in('user_pw')),
         user_email: Joi.string().email().required(), 
         })
-        .with('user_pw', 'user_confirmPw'); 
+        .with('user_pw', 'user_confirmPw');
 
     try { // 검사 
     	await enrollSchema.validateAsync(body); 
