@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const util = require('../function/replyFunc.js');
 
-exports.enrollValidation = async (req, res, next) =>{  
+exports.enrollValidation = async (req, res, next) => {  
     const body = req.body; 
     const user_id_pattern = /^[a-z|A-Z|0-9]+$/;
     const user_nick_pattern = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9]+$/;
