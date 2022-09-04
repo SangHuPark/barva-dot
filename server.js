@@ -10,6 +10,8 @@ const duplicateRouter = require('./API/routes/duplicateRouter.js');
 const authMailRouter = require('./API/routes/authMailRouter.js');
 const inspectMail = require('./API/routes/inspectMailRouter.js');
 
+const imageTest = require('./imageTest.js');
+
 const app = express();
 
 app.set('port', process.env.PORT || 3003);
@@ -23,6 +25,8 @@ app.use('/resign', resignRouter);
 app.use('/duplicateCheck', duplicateRouter);
 app.use('/authMail', authMailRouter);
 app.use('/inspectMail', inspectMail);
+
+app.use('/img', imageTest);
 
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), "port connected!!");
