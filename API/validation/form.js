@@ -52,4 +52,61 @@ exports.nickCheck = async (req, res, next) => {
             .pattern(new RegExp(user_nick_pattern))
             .required(),
     })
+
+    try {
+        await nickSchema.validateAsync(user_nick);
+
+        return next();
+    } catch (err) {
+        var dataReply = {};
+
+        console.log(err.message);
+
+        return res.json(util.dataReply(dataReply, false, 401, "닉네임 형식이 올바르지 않습니다.", { err: err.message }));
+    }
+}
+
+exports.idCheck = async (req, res, next) => {
+    const user_id = req.body.user_id;
+
+    const user_id_pattern = /^[a-z|A-Z|0-9]+$/;
+
+    const idSchema = Joi.object().keys({
+        user_id: Joi.string()
+            .max(15)
+            .pattern(new RegExp(user_id_pattern))
+            .required(),
+    })
+
+    try {
+        await idSchema.validateAsync(user_id);
+
+        return next();
+    } catch (err) {
+        var dataReply = {};
+
+        console.log(err.message);
+
+        return res.json(util.dataReply(dataReply, false, 402, "아이디 형식이 올바르지 않습니다.", { err: err.message }));
+    }
+}
+
+exports.emailCheck = async (req, res, next) => {
+    const user_email = req.body.user_email;
+
+    const emailSchema = Joi.object().keys({
+        user_email: Joi.string().email().required(),
+    })
+
+    try {
+        await emailSchema.validateAsync(user_email);
+
+        return next();
+    } catch(err) {
+        var dataReply = {};
+
+        console.log(err.message);
+
+        return res.json(util.dataReply(dataReply, false, 403, "이메일 형식이 올바르지 않습니다.", { err: err.message }));
+    }
 }

@@ -1,10 +1,10 @@
 const express = require('express');
 const userController = require('../controllers/userController.js');
-const { enrollValidation } = require('../validation/joi.js');
+const form = require('../validation/form.js');
 
 const router = express.Router();
 
 router.route('/')
-    .post(enrollValidation, userController.duplicateCheck);
+    .post(form.nickCheck, userController.duplicatedNickCheck);
 
 module.exports = router;
