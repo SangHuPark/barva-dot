@@ -7,7 +7,7 @@ dotenv.config();
 const userService = require('../service/userService.js');
 const cryptoFunc = require('../function/cryptoFunc.js');
 const util = require('../function/replyFunc.js');
-const mail = require('../function/mailFunc.js');
+const mail = require('../validation/mailFunc.js');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -34,14 +34,6 @@ exports.enroll = async (req, res) => {
         return res.json(util.makeReply(reply, false, 305, '비밀번호가 일치하지 않습니다.'));
 
     try {
-        var enrollIdCheck = await userService.existIdCheck(user_id);
-            if(enrollIdCheck) 
-                return res.json(util.makeReply(reply, false, 306, '이미 사용 중인 아이디입니다.'));
-
-        var enrollNickCheck = await userService.existNickCheck(user_name);
-            if(enrollNickCheck)
-                return res.json(util.makeReply(reply, false, 307, '이미 사용 중인 이름입니다.'));
-            
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email };
         await userService.insertUser(newUserInfo);
