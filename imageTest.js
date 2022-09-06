@@ -3,6 +3,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+const router = express.Router();
+
+const util = require('./API/function/replyFunc.js');
+
+var reply = {};
+
 try {
   fs.readdirSync("upload");
 } catch (err) {
@@ -10,31 +16,29 @@ try {
   fs.mkdirSync("upload");
 }
 
-const fileStorage = multer.diskStorage({
+var fileStorage = multer.diskStorage({
   // 저장 폴더 위치
-  destination: (req, file, cb) => {
-    cb(null, "upload/");
+  destination: (req, file, callback) => {
+    callback(null, "upload/");
   },
   //파일이름
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-barva-${file.originalname}`);
+  filename: (req, file, callback) => {
+    callback(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
-const multerUpload = multer({
+var multerUpload = multer({
   storage: fileStorage,
   limits: {
     fileSize: 20 * 1080 * 1080, // 20MB 로 제한
   },
 });
 
-module.exports = multerUpload;
-
-const router = express.Router();
-
 router.route('/')
-    .post(upload.single('img'), (req, res) => {
+    .post(multerUpload.single('img'), (req, res) => {
         console.log(req.file);
+        console.log(req.file.path);
+        res.json(util.makeReply(reply, true, 200, "Image Upload Success"));
     });
 
 module.exports = router;
