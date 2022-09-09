@@ -33,7 +33,7 @@ exports.enroll = async (req, res) => {
     }
 }
 
-// 중복 검사
+// 아이디 중복 검사
 exports.duplicatedIdCheck = async (req, res) => {
     const user_id = req.body.user_id;
 
@@ -41,16 +41,17 @@ exports.duplicatedIdCheck = async (req, res) => {
         var enrollIdCheck = await userService.existIdCheck(user_id);
         
         if(enrollIdCheck) 
-            return res.json(util.makeReply(reply, false, 302, '이미 사용 중인 아이디입니다.')); 
+            return res.json(util.makeReply(reply, false, 301, '이미 사용 중인 아이디입니다.')); 
         else
             return res.json(util.makeReply(reply, true, 200, '사용 가능한 아이디입니다.'));
     } catch (err) {
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
+// 닉네임 중복 검사
 exports.duplicatedNickCheck = async (req, res) => {
     const user_nick = req.body.user_nick;
 
@@ -58,7 +59,7 @@ exports.duplicatedNickCheck = async (req, res) => {
         var enrollNickCheck = await userService.existNickCheck(user_nick);
         
         if(enrollNickCheck)
-            return res.json(util.makeReply(reply, false, 303, '이미 사용 중인 이름입니다.'));
+            return res.json(util.makeReply(reply, false, 302, '이미 사용 중인 이름입니다.'));
         else
             return res.json(util.makeReply(reply, true, 200, '사용 가능한 이름입니다.'));
     } catch (err) {
@@ -78,7 +79,7 @@ exports.sendMail = async (req, res) => {
         var enrollMailCheck = await userService.existMailCheck(user_email);
             
         if(enrollMailCheck === true) 
-            return res.json(util.makeReply(reply, false, 304, '이미 가입된 메일 정보입니다.'));
+            return res.json(util.makeReply(reply, false, 303, '이미 가입된 메일 정보입니다.'));
         
         const authNumber = await cryptoFunc.makeAuthNumber();
         await mail.makeMail(authNumber, user_email);
@@ -101,7 +102,7 @@ exports.authUser = async (req, res) => {
         if(confirmNumber === authNumber)
             res.json(util.makeReply(reply, true, 200, '인증이 완료되었습니다.'));
         else
-            res.json(util.makeReply(reply, false, 305, '인증번호가 일치하지 않습니다.'));
+            res.json(util.makeReply(reply, false, 304, '인증번호가 일치하지 않습니다.'));
 
     } catch (err) {
         console.log(err.message);
@@ -121,11 +122,11 @@ exports.login = async (req, res) => {
     try {
         var loginCheck = await userService.existIdCheck(user_id);
         if(!loginCheck)
-            return res.json(util.makeReply(reply, false, 306, '등록되지 않은 회원정보입니다.')); 
+            return res.json(util.makeReply(reply, false, 305, '등록되지 않은 회원정보입니다.')); 
 
         var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
         if(checkPw !== loginCheck.user_pw)
-            return res.json(util.makeReply(reply, false, 307, '비밀번호를 확인하세요.'));
+            return res.json(util.makeReply(reply, false, 306, '비밀번호를 확인하세요.'));
 
         token = jwt.sign({
             type: 'JWT',
@@ -153,7 +154,7 @@ exports.resign = async (req, res) => {
         var resignCheck = await userService.existIdCheck(user_id);
         var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
         if(checkPw !== resignCheck.user_pw)
-            return res.json(util.makeReply(reply, false, 307, '비밀번호를 확인하세요.'));
+            return res.json(util.makeReply(reply, false, 306, '비밀번호를 확인하세요.'));
 
         await userService.deleteUser(user_id);
 
