@@ -48,6 +48,32 @@ exports.enrollCheck = async (req, res, next) => {
     }
 }
 
+exports.idCheck = async (req, res, next) => {
+    const user_id = req.body;
+
+    const user_id_pattern = /^[a-z|A-Z|0-9]+$/;
+
+    const idSchema = Joi.object().keys({
+        user_id: Joi.string()
+            .min(5)
+            .max(15)
+            .pattern(new RegExp(user_id_pattern))
+            .required(),
+    })
+
+    try {
+        await idSchema.validateAsync(user_id);
+
+        return next();
+    } catch (err) {
+        var dataReply = {};
+
+        console.log(err.message);
+
+        return res.json(util.dataReply(dataReply, false, 401, "아이디 형식이 올바르지 않습니다.", { err: err.message }));
+    }
+}
+
 exports.nickCheck = async (req, res, next) => {
     const user_nick = req.body.user_nick;
 
@@ -69,32 +95,7 @@ exports.nickCheck = async (req, res, next) => {
 
         console.log(err.message);
 
-        return res.json(util.dataReply(dataReply, false, 401, "닉네임 형식이 올바르지 않습니다.", { err: err.message }));
-    }
-}
-
-exports.idCheck = async (req, res, next) => {
-    const user_id = req.body.user_id;
-
-    const user_id_pattern = /^[a-z|A-Z|0-9]+$/;
-
-    const idSchema = Joi.object().keys({
-        user_id: Joi.string()
-            .max(15)
-            .pattern(new RegExp(user_id_pattern))
-            .required(),
-    })
-
-    try {
-        await idSchema.validateAsync(user_id);
-
-        return next();
-    } catch (err) {
-        var dataReply = {};
-
-        console.log(err.message);
-
-        return res.json(util.dataReply(dataReply, false, 402, "아이디 형식이 올바르지 않습니다.", { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 402, "닉네임 형식이 올바르지 않습니다.", { err: err.message }));
     }
 }
 
