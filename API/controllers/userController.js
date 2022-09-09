@@ -20,9 +20,6 @@ var dataReply = {};
 exports.enroll = async (req, res) => {
     const { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email } = req.body;
 
-    if(user_pw !== user_confirmPw)
-        return res.json(util.makeReply(reply, false, 301, '비밀번호가 일치하지 않습니다.'));
-
     try {
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email };
