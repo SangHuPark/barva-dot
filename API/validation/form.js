@@ -5,8 +5,9 @@ exports.enrollCheck = async (req, res, next) => {
     const body = req.body; 
 
     const user_name_pattern = /^[가-힣|a-z|A-Z]+$/;
-    const user_nick_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
+    const user_nick_pattern = /^[가-힣|a-z|A-Z|0-9]+$/;
     const user_id_pattern = /^[a-z|A-Z|0-9]+$/;
+    const user_pw_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
     
     const enrollSchema = Joi.object().keys({ 
         user_name: Joi.string()
@@ -15,14 +16,20 @@ exports.enrollCheck = async (req, res, next) => {
             .pattern(new RegExp(user_name_pattern))
             .required(),
         user_nick: Joi.string()
+            .min(2)
             .max(15)
             .pattern(new RegExp(user_nick_pattern))
             .required(),
         user_id: Joi.string()
+            .min(5)
             .max(15)
             .pattern(new RegExp(user_id_pattern))
             .required(),
-        user_pw: Joi.string().min(6).max(15).required(), 
+        user_pw: Joi.string()
+            .min(6)
+            .max(15)
+            .pattern(new RegExp(user_pw_pattern))
+            .required(), 
         user_confirmPw: Joi.string().valid(Joi.in('user_pw')),
         user_email: Joi.string().email().required(), 
         })
