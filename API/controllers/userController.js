@@ -18,11 +18,11 @@ var dataReply = {};
 
 // 회원가입
 exports.enroll = async (req, res) => {
-    const { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email } = req.body;
+    const { user_name, user_nick, user_id, user_pw, user_email, marketing } = req.body;
 
     try {
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
-        const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email };
+        const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing };
         await userService.insertUser(newUserInfo);
 
         return res.json(util.makeReply(reply, true, 200, '회원가입을 성공하였습니다.'));

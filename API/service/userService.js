@@ -37,7 +37,7 @@ exports.existMailCheck = async (user_email) => {
 
 exports.insertUser = async (newUserInfo) => {
     const {
-        user_name, user_nick, user_id, hashed_pw, pw_salt, user_email
+        user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing
     } = newUserInfo;
 
     const newUser = await prisma.users.create({
@@ -48,6 +48,7 @@ exports.insertUser = async (newUserInfo) => {
             user_pw: hashed_pw,
             pw_salt,
             user_email,
+            marketing,
         },
     })
     .then((result) => { // 회원 가입 성공 시
