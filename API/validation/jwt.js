@@ -15,7 +15,7 @@ exports.auth = async (req, res, next) => {
       return res.json(util.dataReply(dataReply, false, 419, '토큰이 만료되었습니다', { err: err.message }));
     }
     if (err.name === 'JsonWebTokenError') {
-      return res.json(util.dataReply(dataReply, false, 401, '유효하지 않은 토큰입니다', { err: err.message }));
+      return res.json(util.dataReply(dataReply, false, 420, '유효하지 않은 토큰입니다', { err: err.message }));
     }
   }
 };
