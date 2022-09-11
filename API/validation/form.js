@@ -31,7 +31,8 @@ exports.enrollCheck = async (req, res, next) => {
             .pattern(new RegExp(user_pw_pattern))
             .required(), 
         user_confirmPw: Joi.string().valid(Joi.in('user_pw')),
-        user_email: Joi.string().email().required(), 
+        user_email: Joi.string().email().required(),
+        marketing: Joi.boolean().required(),
         })
         .with('user_pw', 'user_confirmPw');
 
@@ -42,7 +43,7 @@ exports.enrollCheck = async (req, res, next) => {
     } catch (err) { // 에러 
         var dataReply = {};
 
-        console.log(err.message);
+        console.log(err);
 
     	return res.json(util.dataReply(dataReply, false, 400, "요청한 데이터 형식이 올바르지 않습니다.", { err: err.message }));
     }
@@ -68,7 +69,7 @@ exports.idCheck = async (req, res, next) => {
     } catch (err) {
         var dataReply = {};
 
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 401, "아이디 형식이 올바르지 않습니다.", { err: err.message }));
     }
@@ -94,7 +95,7 @@ exports.nickCheck = async (req, res, next) => {
     } catch (err) {
         var dataReply = {};
 
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 402, "닉네임 형식이 올바르지 않습니다.", { err: err.message }));
     }
@@ -114,7 +115,7 @@ exports.emailCheck = async (req, res, next) => {
     } catch(err) {
         var dataReply = {};
 
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 403, "이메일 형식이 올바르지 않습니다.", { err: err.message }));
     }
