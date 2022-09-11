@@ -128,7 +128,7 @@ exports.login = async (req, res) => {
 
         var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
         if(checkPw !== loginCheck.user_pw)
-            return res.json(util.makeReply(reply, false, 306, '비밀번호를 확인하세요.'));
+            return res.json(util.makeReply(reply, false, 306, '아이디 또는 비밀번호를 다시 확인하세요.'));
 
         token = jwt.sign({
             type: 'JWT',
@@ -138,7 +138,7 @@ exports.login = async (req, res) => {
             expiresIn: '100y',
             issuer: user_name.toString(),
           });
-        
+
         return res.json(util.dataReply(dataReply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
     } catch (err) {
         console.log(err);
@@ -154,13 +154,16 @@ exports.resign = async (req, res) => {
 
     try {
         var resignCheck = await userService.existIdCheck(user_id);
+        if(!resignCheck)
+            return res.json(util.makeReply(reply, false, 407, "이미 탈퇴한 회원 정보입니다."));
+
         var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
         if(checkPw !== resignCheck.user_pw)
-            return res.json(util.makeReply(reply, false, 306, '비밀번호를 확인하세요.'));
+            return res.json(util.makeReply(reply, false, 306, '아이디 또는 비밀번호를 다시 확인하세요.'));
 
         await userService.deleteUser(user_id);
 
-        return res.json(util.makeReply(reply, true, 200, '회원탈퇴를 성공하였습니다.'));
+        return res.json(util.makeReply(reply, true, 200, '탈퇴되었습니다.'));
     } catch (err) {
         console.log(err.message);
 
