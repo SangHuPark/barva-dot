@@ -27,7 +27,7 @@ exports.enroll = async (req, res) => {
 
         return res.json(util.makeReply(reply, true, 200, '회원가입을 성공하였습니다.'));
     } catch (err) {
-        console.log(err.message);
+        console.log(err);
         
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
@@ -63,7 +63,7 @@ exports.duplicatedNickCheck = async (req, res) => {
         else
             return res.json(util.makeReply(reply, true, 200, '사용 가능한 이름입니다.'));
     } catch (err) {
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
@@ -87,7 +87,7 @@ exports.sendMail = async (req, res) => {
 
         return res.json(util.dataReply(dataReply, true, 200, "인증번호가 전송되었습니다.", { authNumber }));
     } catch (err) {
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
@@ -105,7 +105,7 @@ exports.authUser = async (req, res) => {
             res.json(util.makeReply(reply, false, 304, '인증번호가 일치하지 않습니다.'));
 
     } catch (err) {
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
@@ -116,8 +116,10 @@ exports.login = async (req, res) => {
     const { user_id, user_pw } = req.body;
     const user_name = await userService.importUserName(user_id);
 
-    if(!user_id || !user_pw)
-        return res.json(util.makeReply(reply, false, 400, '입력하지 않은 항목이 존재합니다.'));
+    if(!user_id)
+        return res.json(util.makeReply(reply, false, 405, '아이디를 입력해주세요.'));
+    if(!user_pw)
+        return res.json(util.makeReply(reply, false, 406, '비밀번호를 입력해주세요.'));
 
     try {
         var loginCheck = await userService.existIdCheck(user_id);
@@ -139,7 +141,7 @@ exports.login = async (req, res) => {
         
         return res.json(util.dataReply(dataReply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
     } catch (err) {
-        console.log(err.message);
+        console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
