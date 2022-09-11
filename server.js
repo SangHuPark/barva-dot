@@ -34,6 +34,6 @@ app.listen(app.get('port'), () => {
     console.log(app.get('port'), "port connected!!");
 });
 
-app.use((req, res) => {
+/** app.use((req, res) => {
     console.log(req.url);
-})
+}) */
