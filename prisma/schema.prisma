@@ -14,4 +14,5 @@ model users {
   user_pw   String @db.VarChar(200)
   pw_salt   String @db.VarChar(200)
   user_email String @unique @db.VarChar(30)
+  marketing Boolean
 }
