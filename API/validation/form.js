@@ -81,6 +81,7 @@ exports.nickCheck = async (req, res, next) => {
 
     const nickSchema = Joi.object().keys({
         user_nick: Joi.string()
+            .min(2)
             .max(15)
             .pattern(new RegExp(user_nick_pattern))
             .required(),
