@@ -29,7 +29,7 @@ exports.makePasswordHashed = async (userId, plainPassword) => {
                     user_id: userId,
                 },
             })
-            .then((result) => result.pw_salt);
+            .then((result) => result.pw_salt)
         crypto.pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
             if (err) reject(err);
             resolve(key.toString('base64'));
