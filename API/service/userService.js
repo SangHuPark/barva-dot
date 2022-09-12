@@ -74,6 +74,35 @@ exports.importUserName = async (user_id) => {
     return importUserInfo;
 }
 
+exports.findUserId = async (user_email) => {
+    var importUserId = await prisma.users.findUnique({
+        where: {
+            user_email,
+        },
+        select: {
+            user_id: true,
+        },
+    });
+
+    return importUserId;
+}
+
+exports.updateUserPw = async (updateUserInfo) => {
+    var { user_id, hashed_pw, pw_salt } = updateUserInfo;
+
+    const updateUserResult = await prisma.users.updateMany({
+        where: {
+            user_id,
+        },
+        data: {
+            user_pw: hashed_pw,
+            pw_salt,
+        },
+    });
+
+    return updateUserResult;
+}
+
 exports.deleteUser = async (user_id) => {
     const deleteUserInfo = await prisma.users.findUnique({
         where: { 
