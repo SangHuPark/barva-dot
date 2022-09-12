@@ -77,7 +77,7 @@ exports.idCheck = async (req, res, next) => {
 }
 
 exports.nickCheck = async (req, res, next) => {
-    var user_nick = req.body.user_nick;
+    var user_nick = req.body;
 
     var user_nick_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
 
