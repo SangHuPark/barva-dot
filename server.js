@@ -3,13 +3,16 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const loginRouter = require('./API/routes/loginRouter.js');
-const enrollRouter = require('./API/routes/enrollRouter.js');
-const resignRouter = require('./API/routes/resignRouter.js');
-const duplicatedIdRouter = require('./API/routes/duplicatedIdRouter.js');
-const duplicatedNickRouter = require('./API/routes/duplicatedNickRouter.js');
-const authMailRouter = require('./API/routes/authMailRouter.js');
-const inspectMail = require('./API/routes/inspectMailRouter.js');
+var loginRouter = require('./API/routes/loginRouter.js');
+var enrollRouter = require('./API/routes/enrollRouter.js');
+var duplicatedIdRouter = require('./API/routes/duplicatedIdRouter.js');
+var duplicatedNickRouter = require('./API/routes/duplicatedNickRouter.js');
+var authMailRouter = require('./API/routes/authMailRouter.js');
+var inspectMailRouter = require('./API/routes/inspectMailRouter.js');
+var findIdRouter = require('./API/routes/findIdRouter.js');
+var findPwRouter = require('./API/routes/findPwRouter.js');
+var updatePwRouter = require('./API/routes/updatePwRouter.js');
+var resignRouter = require('./API/routes/resignRouter.js');
 
 const imageTest = require('./imageTest.js');
 
@@ -22,11 +25,14 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/login', loginRouter)
 app.use('/enroll', enrollRouter);
-app.use('/resign', resignRouter);
 app.use('/duplicatedIdCheck', duplicatedIdRouter);
 app.use('/duplicatedNickCheck', duplicatedNickRouter)
 app.use('/authMail', authMailRouter);
-app.use('/inspectMail', inspectMail);
+app.use('/inspectMail', inspectMailRouter);
+app.use('/findId', findIdRouter);
+app.use('/findPw', findPwRouter);
+app.use('/updatePw', updatePwRouter);
+app.use('/resign', resignRouter);
 
 app.use('/img', imageTest);
 
