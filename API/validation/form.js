@@ -79,7 +79,7 @@ exports.idCheck = async (req, res, next) => {
 exports.nickCheck = async (req, res, next) => {
     var user_nick = req.body;
 
-    var user_nick_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
+    var user_nick_pattern = /^[가-힣|a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
 
     var nickSchema = Joi.object().keys({
         user_nick: Joi.string()
