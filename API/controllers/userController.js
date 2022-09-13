@@ -18,7 +18,7 @@ var dataReply = {};
 
 // 회원가입
 exports.enroll = async (req, res) => {
-    var { user_name, user_nick, user_id, user_pw, user_email, marketing } = req.body;
+    const { user_name, user_nick, user_id, user_pw, user_email, marketing } = req.body;
     
     try {
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
@@ -35,7 +35,7 @@ exports.enroll = async (req, res) => {
 
 // 아이디 중복 검사
 exports.duplicatedIdCheck = async (req, res) => {
-    var user_id = req.body.user_id;
+    const user_id = req.body.user_id;
 
     try {
         var enrollIdCheck = await userService.existIdCheck(user_id);
@@ -53,7 +53,7 @@ exports.duplicatedIdCheck = async (req, res) => {
 
 // 닉네임 중복 검사
 exports.duplicatedNickCheck = async (req, res) => {
-    var user_nick = req.body.user_nick;
+    const user_nick = req.body.user_nick;
 
     try {
         var enrollNickCheck = await userService.existNickCheck(user_nick);
@@ -71,7 +71,7 @@ exports.duplicatedNickCheck = async (req, res) => {
 
 // 인증 메일 전송
 exports.sendMail = async (req, res) => {
-    var user_email = req.body.user_email;
+    const user_email = req.body.user_email;
 
     authCache.del(user_email);
 
@@ -95,7 +95,7 @@ exports.sendMail = async (req, res) => {
 
 // 인증번호 확인
 exports.authUser = async (req, res) => {
-    var { user_email, confirmNumber } = req.body;
+    const { user_email, confirmNumber } = req.body;
 
     try {
         const authNumber = authCache.get(user_email);
@@ -113,8 +113,8 @@ exports.authUser = async (req, res) => {
 
 // 로그인
 exports.login = async (req, res) => {
-    var { user_id, user_pw } = req.body;
-    var user_name = await userService.importUserName(user_id);
+    const { user_id, user_pw } = req.body;
+    const user_name = await userService.importUserName(user_id);
 
     if(!user_id)
         return res.json(util.makeReply(reply, false, 308, '아이디를 입력해주세요.'));
@@ -149,8 +149,8 @@ exports.login = async (req, res) => {
 
 // 회원탈퇴
 exports.resign = async (req, res) => {
-    var user_pw = req.body.user_pw;
-    var user_id = req.decoded.user_id;
+    const user_pw = req.body.user_pw;
+    const user_id = req.decoded.user_id;
 
     try {
         var resignCheck = await userService.existIdCheck(user_id);
@@ -173,7 +173,7 @@ exports.resign = async (req, res) => {
 
 // 아이디 찾기
 exports.findId = async (req, res) => {
-    var { user_email } = req.body;
+    const { user_email } = req.body;
 
     try {
         var findIdInfo = await userService.findUserId(user_email);
@@ -190,7 +190,7 @@ exports.findId = async (req, res) => {
 
 // 비밀번호 찾기
 exports.findPw = async (req, res) => {
-    var { user_id } = req.body;
+    const { user_id } = req.body;
 
     if(!user_id)
         return res.json(util.makeReply(reply, false, 308, '아이디를 입력해주세요.'));
@@ -210,7 +210,7 @@ exports.findPw = async (req, res) => {
 
 // 비밀번호 재설정
 exports.updatePw = async (req, res) => {
-    var { user_id, user_pw } = req.body;
+    const { user_id, user_pw } = req.body;
 
     try {
         var { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
