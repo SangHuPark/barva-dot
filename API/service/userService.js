@@ -75,7 +75,7 @@ exports.importUserName = async (user_id) => {
 }
 
 exports.findUserId = async (user_email) => {
-    var importUserId = await prisma.users.findUnique({
+    const importUserId = await prisma.users.findUnique({
         where: {
             user_email,
         },
@@ -88,7 +88,7 @@ exports.findUserId = async (user_email) => {
 }
 
 exports.updateUserPw = async (updateUserInfo) => {
-    var { user_id, hashed_pw, pw_salt } = updateUserInfo;
+    const { user_id, hashed_pw, pw_salt } = updateUserInfo;
 
     const updateUserResult = await prisma.users.updateMany({
         where: {
