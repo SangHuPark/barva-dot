@@ -19,7 +19,7 @@ var dataReply = {};
 // 회원가입
 exports.enroll = async (req, res) => {
     var { user_name, user_nick, user_id, user_pw, user_email, marketing } = req.body;
-
+    
     try {
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing };
