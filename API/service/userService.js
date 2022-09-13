@@ -48,7 +48,7 @@ exports.insertUser = async (newUserInfo) => {
             user_pw: hashed_pw,
             pw_salt,
             user_email,
-            marketing,
+            marketing: marketing,
         },
     })
     .then((result) => { // 회원 가입 성공 시
