@@ -4,8 +4,11 @@ const path = require('path');
 const fs = require('fs');
 
 const router = express.Router();
+const app = express();
 
 const util = require('./API/function/replyFunc.js');
+
+app.use('/', express.static(path.join(__dirname, "./uploads/1663155762972.jpg")));
 
 var reply = {};
 
@@ -23,7 +26,7 @@ var fileStorage = multer.diskStorage({
   },
   //파일이름
   filename: (req, file, callback) => {
-    callback(null, `${Date.now()}-${file.originalname}`);
+    callback(null, new Date().valueOf() + path.extname(file.originalname));
   },
 });
 
@@ -35,6 +38,10 @@ var multerUpload = multer({
 });
 
 router.route('/')
+    .get((req, res) => {
+      res.sendFile(path.join(__dirname, "./uploads/1663155762972.jpg"));
+      console.log(path.join(__dirname, "./uploads/1663155762972.jpg"));
+    })
     .post(multerUpload.single('img'), (req, res) => {
         console.log(req.file);
         console.log(req.file.path);
