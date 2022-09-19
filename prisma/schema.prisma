@@ -17,4 +17,5 @@ model users {
   user_email String @unique @db.VarChar(30)
   marketing Boolean
   user_introduction String? @default("")
+  user_profile String? @default("")
 }
