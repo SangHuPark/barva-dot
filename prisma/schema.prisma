@@ -7,8 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id Int @id
+model User {
+  id Int @id @default(autoincrement())
   user_name String @db.VarChar(10)
   user_nick String @unique @db.VarChar(15)
   user_id   String @unique @db.VarChar(15)
@@ -18,4 +18,18 @@ model users {
   marketing Boolean
   user_introduction String? @default("")
   user_profile String? @default("")
+  created_at DateTime @default(now()) @db.Date
+
 }
+// id, 게시글 uuid, 본문,
+// 좋아요 수, created_at,
+// 추출 색상, image,
+// 작성한 회원 id(외래키)
+model Post {
+  id Int @id @default(autoincrement())
+  post_uuid String @unique @default(uuid())
+  post_content String 
+  post_like Int? @default(0)
+  created_at DateTime @default(now()) @db.Date
+}
+
