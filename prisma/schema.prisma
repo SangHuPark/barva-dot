@@ -16,7 +16,7 @@ model User {
   pw_salt   String @db.VarChar(200)
   user_email String @unique @db.VarChar(30)
   marketing Boolean
-  user_introduction String? @default("")
+  user_introduce String? @default("")
   user_profile String? @default("")
   created_at DateTime @default(now()) @db.Date
 
