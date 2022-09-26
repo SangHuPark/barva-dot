@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.existIdCheck = async (user_id) => {
-    const idData = await prisma.users.findUnique({ 
+    const idData = await prisma.User.findUnique({ 
         where : {
             user_id,
         }
@@ -13,7 +13,7 @@ exports.existIdCheck = async (user_id) => {
 }
 
 exports.existNickCheck = async (user_nick) => {
-    const nickData = await prisma.users.findUnique({ 
+    const nickData = await prisma.User.findUnique({ 
         where : {
             user_nick,
         },
@@ -23,7 +23,7 @@ exports.existNickCheck = async (user_nick) => {
 }
 
 exports.existMailCheck = async (user_email) => {
-    const mailData = await prisma.users.findUnique({
+    const mailData = await prisma.User.findUnique({
         where : {
             user_email,
         },
@@ -40,7 +40,7 @@ exports.insertUser = async (newUserInfo) => {
         user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing
     } = newUserInfo;
 
-    const newUser = await prisma.users.create({
+    const newUser = await prisma.User.create({
         data: {
             user_name,
             user_nick,
@@ -62,7 +62,7 @@ exports.insertUser = async (newUserInfo) => {
 }
 
 exports.importUserName = async (user_id) => {
-    const importUserInfo = await prisma.users.findUnique({
+    const importUserInfo = await prisma.User.findUnique({
         where: {
             user_id,
         },
@@ -75,7 +75,7 @@ exports.importUserName = async (user_id) => {
 }
 
 exports.findUserId = async (user_email) => {
-    const importUserId = await prisma.users.findUnique({
+    const importUserId = await prisma.User.findUnique({
         where: {
             user_email,
         },
@@ -90,7 +90,7 @@ exports.findUserId = async (user_email) => {
 exports.updateUserPw = async (updateUserInfo) => {
     const { user_id, hashed_pw, pw_salt } = updateUserInfo;
 
-    const updateUserResult = await prisma.users.updateMany({
+    const updateUserResult = await prisma.User.updateMany({
         where: {
             user_id,
         },
@@ -104,7 +104,7 @@ exports.updateUserPw = async (updateUserInfo) => {
 }
 
 exports.deleteUser = async (user_id) => {
-    const deleteUserInfo = await prisma.users.findUnique({
+    const deleteUserInfo = await prisma.User.findUnique({
         where: { 
             user_id,
         },
@@ -117,7 +117,7 @@ exports.deleteUser = async (user_id) => {
         throw new Error(err);
     });
 
-    await prisma.users.delete({
+    await prisma.User.delete({
         where: {
             user_id : user_id
         }
