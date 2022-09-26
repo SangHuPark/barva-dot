@@ -16,9 +16,12 @@ model User {
   pw_salt   String @db.VarChar(200)
   user_email String @unique @db.VarChar(30)
   marketing Boolean
-  user_introduce String? @default("")
-  user_profile String? @default("")
-  // created_at DateTime @default(now()) @db.Date
+  user_introduce String? @default("") @db.VarChar(50)
+  user_profile String? @default("") @db.VarChar(50)
+  // created_at DateTime @default(now())
+
+  posts Post[]
+  comments_user Comment[]
 }
 // @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
 
@@ -26,11 +29,35 @@ model User {
 // 좋아요 수, created_at,
 // 추출 색상, image,
 // 작성한 회원 id(외래키)
-// model Post {
-//   id Int @id @default(autoincrement())
-//   post_uuid String @unique @default(uuid())
-//   post_content String 
-//   post_like Int? @default(0)
-//   created_at DateTime @default(now()) @db.Date
-// }
+model Post {
+  id Int @id @default(autoincrement())
+  post_content String @db.VarChar(500) 
+  post_like Int? @default(0)
+  color_extract String @db.VarChar(100)
+  post_image String @db.VarChar(200)
+  // created_at DateTime @default(now())
 
+  post_user User @relation(fields: [post_users], references: [id])
+  post_users Int
+
+  comments_post Comment[]
+  save_posts Save_post[]
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  comment String @db.VarChar(200)
+  // created_at DateTime @default(now())
+
+
+  commenter User @relation(fields: [comment_users], references: [id])
+  comment_users Int
+
+  target_post Post @relation(fields: [comment_posts], references: [id])
+  comment_posts Int
+}
+
+model Save_post {
+  stored_post Post @relation(fields: [saved_posts], references: [id])
+  saved_posts Int
+}
