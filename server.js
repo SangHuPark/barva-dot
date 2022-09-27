@@ -14,8 +14,6 @@ var findPwRouter = require('./API/routes/findPwRouter.js');
 var updatePwRouter = require('./API/routes/updatePwRouter.js');
 var resignRouter = require('./API/routes/resignRouter.js');
 
-const imageTest = require('./imageTest.js');
-
 const app = express();
 
 app.set('port', process.env.PORT || 3003);
@@ -33,8 +31,6 @@ app.use('/findId', findIdRouter);
 app.use('/findPw', findPwRouter);
 app.use('/updatePw', updatePwRouter);
 app.use('/resign', resignRouter);
-
-app.use('/img', imageTest);
 
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), "port connected!!");
