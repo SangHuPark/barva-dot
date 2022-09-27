@@ -23,13 +23,10 @@ model User {
   posts Post[]
   comments_user Comment[]
   save_user Save_post[]
+  follower_user Follow[] @relation("follower") 
+  following_user Follow[] @relation("following")
 }
-// @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
 
-// id, 게시글 uuid, 본문,
-// 좋아요 수, created_at,
-// 추출 색상, image,
-// 작성한 회원 id(외래키)
 model Post {
   id Int @id @default(autoincrement())
   post_content String @db.VarChar(500) 
@@ -38,8 +35,8 @@ model Post {
   post_image String @db.VarChar(200)
   created_at DateTime @default(now())
 
-  post_user User @relation(fields: [post_users], references: [id])
-  post_users Int
+  post_users User @relation(fields: [post_user], references: [id])
+  post_user Int
 
   comments_post Comment[]
   save_posts Save_post[]
@@ -50,23 +47,34 @@ model Comment {
   comment String @db.VarChar(200)
   created_at DateTime @default(now())
 
+  commente_users User @relation(fields: [commenter], references: [id])
+  commenter Int
 
-  commenter User @relation(fields: [comment_users], references: [id])
-  comment_users Int
-
-  target_post Post @relation(fields: [comment_posts], references: [id])
-  comment_posts Int
+  comment_posts Post @relation(fields: [target_post], references: [id])
+  target_post Int
 }
 
 model Save_post {
   
-  stored_user User @relation(fields: [saved_users], references: [id])
-  saved_users Int
+  saved_users User @relation(fields: [stored_user], references: [id])
+  stored_user Int
   
-  stored_post Post @relation(fields: [saved_posts], references: [id])
-  saved_posts Int
+  saved_posts Post @relation(fields: [stored_post], references: [id])
+  stored_post Int
 
   created_at DateTime @default(now())
 
   @@id(fields: [stored_user, stored_post])
+}
+
+model Follow {
+  follower User @relation("follower",fields: [follower_id], references: [id])
+  follower_id Int
+
+  following User @relation("following",fields: [following_id], references: [id])
+  following_id Int
+
+  created_at DateTime @default(now())
+
+  @@id(fields: [follower_id, following_id])
 }
