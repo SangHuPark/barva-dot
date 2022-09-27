@@ -18,10 +18,11 @@ model User {
   marketing Boolean
   user_introduce String? @default("") @db.VarChar(50)
   user_profile String? @default("") @db.VarChar(50)
-  // created_at DateTime @default(now())
+  created_at DateTime @default(now())
 
   posts Post[]
   comments_user Comment[]
+  save_user Save_post[]
 }
 // @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
 
@@ -35,7 +36,7 @@ model Post {
   post_like Int? @default(0)
   color_extract String @db.VarChar(100)
   post_image String @db.VarChar(200)
-  // created_at DateTime @default(now())
+  created_at DateTime @default(now())
 
   post_user User @relation(fields: [post_users], references: [id])
   post_users Int
@@ -47,7 +48,7 @@ model Post {
 model Comment {
   id Int @id @default(autoincrement())
   comment String @db.VarChar(200)
-  // created_at DateTime @default(now())
+  created_at DateTime @default(now())
 
 
   commenter User @relation(fields: [comment_users], references: [id])
@@ -58,6 +59,14 @@ model Comment {
 }
 
 model Save_post {
+  
+  stored_user User @relation(fields: [saved_users], references: [id])
+  saved_users Int
+  
   stored_post Post @relation(fields: [saved_posts], references: [id])
   saved_posts Int
+
+  created_at DateTime @default(now())
+
+  @@id(fields: [stored_user, stored_post])
 }
