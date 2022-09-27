@@ -55,7 +55,6 @@ model Comment {
 }
 
 model Save_post {
-  
   saved_users User @relation(fields: [stored_user], references: [id])
   stored_user Int
   
