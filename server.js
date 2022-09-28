@@ -11,6 +11,7 @@ var authMailRouter = require('./API/routes/authMailRouter.js');
 var inspectMailRouter = require('./API/routes/inspectMailRouter.js');
 var findIdRouter = require('./API/routes/findIdRouter.js');
 var findPwRouter = require('./API/routes/findPwRouter.js');
+var findPwMailRouter = require('./API/routes/findPwMailRouter.js');
 var updatePwRouter = require('./API/routes/updatePwRouter.js');
 var resignRouter = require('./API/routes/resignRouter.js');
 
@@ -29,6 +30,7 @@ app.use('/authMail', authMailRouter);
 app.use('/inspectMail', inspectMailRouter);
 app.use('/findId', findIdRouter);
 app.use('/findPw', findPwRouter);
+app.use('/findPwMail', findPwMailRouter);
 app.use('/updatePw', updatePwRouter);
 app.use('/resign', resignRouter);
 
