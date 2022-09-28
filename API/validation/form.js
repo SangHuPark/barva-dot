@@ -1,6 +1,8 @@
 const Joi = require('joi');
 const util = require('../function/replyFunc.js');
 
+var dataReply = {};
+
 exports.enrollCheck = async (req, res, next) => {  
     var { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email, marketing } = req.body;
     var body =  { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email, marketing }
@@ -42,8 +44,6 @@ exports.enrollCheck = async (req, res, next) => {
 
         return next();
     } catch (err) { // 에러 
-        var dataReply = {};
-
         console.log(err);
 
     	return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: err.message }));
@@ -68,8 +68,6 @@ exports.idCheck = async (req, res, next) => {
 
         return next();
     } catch (err) {
-        var dataReply = {};
-
         console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 301, "아이디 형식이 올바르지 않습니다.", { err: err.message }));
@@ -94,11 +92,29 @@ exports.nickCheck = async (req, res, next) => {
 
         return next();
     } catch (err) {
-        var dataReply = {};
-
         console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", { err: err.message }));
+    }
+}
+
+exports.emailForm = async (req, res, next) => {
+    var user_email = req.body;
+
+    var emailSchema = Joi.object().keys({
+        user_email: Joi.string()
+            .email()
+            .required(),
+    })
+
+    try {
+        await emailSchema.validateAsync(user_email);
+
+        return next();
+    } catch(err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: err.message }));
     }
 }
 
@@ -123,8 +139,6 @@ exports.findIdForm = async (req, res, next) => {
 
         return next();
     } catch(err) {
-        var dataReply = {};
-
         console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: err.message }));
@@ -151,8 +165,6 @@ exports.pwCheck = async (req, res, next) => {
 
         return next();
     } catch(err) {
-        var dataReply = {};
-
         console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 312, "비밀번호를 확인하세요.", { err: err.message }));
