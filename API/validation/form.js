@@ -102,15 +102,24 @@ exports.nickCheck = async (req, res, next) => {
     }
 }
 
-exports.emailCheck = async (req, res, next) => {
-    var user_email = req.body;
+exports.findIdForm = async (req, res, next) => {
+    var body = req.body;
 
-    var emailSchema = Joi.object().keys({
-        user_email: Joi.string().email().required(),
+    var user_name_pattern = /^[가-힣|a-z|A-Z]+$/;
+
+    var findIdSchema = Joi.object().keys({
+        user_name: Joi.string()
+            .min(2)
+            .max(10)
+            .pattern(new RegExp(user_name_pattern))
+            .required(),
+        user_email: Joi.string()
+            .email()
+            .required(),
     })
 
     try {
-        await emailSchema.validateAsync(user_email);
+        await findIdSchema.validateAsync(body);
 
         return next();
     } catch(err) {
