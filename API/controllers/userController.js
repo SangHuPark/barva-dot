@@ -173,14 +173,14 @@ exports.resign = async (req, res) => {
 
 // 아이디 찾기
 exports.findId = async (req, res) => {
-    const { user_email } = req.body;
+    const { user_name, user_email } = req.body;
 
     try {
-        var findIdInfo = await userService.findUserId(user_email);
+        var findIdInfo = await userService.findUserId(user_name, user_email);
         if(!findIdInfo)
             return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원 정보가 없습니다.'));
-            
-        return res.json(util.makeReply(reply, true, 200, `회원님의 아이디는 < ${findIdInfo.user_id} > 입니다.`));
+
+        return res.json(util.makeReply(reply, true, 200, `회원님의 아이디는 < ${findIdInfo[0].user_id} > 입니다.`));
     } catch (err) {
         console.log(err);
 
