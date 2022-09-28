@@ -21,10 +21,10 @@ app.set('port', process.env.PORT || 3003);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/login', loginRouter)
+app.use('/login', loginRouter);
 app.use('/enroll', enrollRouter);
 app.use('/duplicatedIdCheck', duplicatedIdRouter);
-app.use('/duplicatedNickCheck', duplicatedNickRouter)
+app.use('/duplicatedNickCheck', duplicatedNickRouter);
 app.use('/authMail', authMailRouter);
 app.use('/inspectMail', inspectMailRouter);
 app.use('/findId', findIdRouter);
