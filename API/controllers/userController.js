@@ -178,7 +178,7 @@ exports.findId = async (req, res) => {
     try {
         var findIdInfo = await userService.findUserId(user_name, user_email);
         if(findIdInfo.length === 0)
-            return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원 정보가 없습니다.'));
+            return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원정보가 없습니다.'));
 
         console.log(findIdInfo);
 
@@ -203,6 +203,34 @@ exports.findPw = async (req, res) => {
             return res.json(util.makeReply(reply, false, 310, '등록되지 않은 회원정보입니다.')); 
 
         return res.json(util.makeReply(reply, true, 200, '비밀번호 재설정 화면으로 이동합니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+// 비밀번호 찾기에서 이메일 인증
+exports.findPwMail = async (req, res) => {
+    const user_email = req.body.user_email;
+
+    authCache.del(user_email);
+
+    try {
+        var enrollMailCheck = await userService.existMailCheck(user_email);
+            
+        if(enrollMailCheck === true) {
+            const authNumber = await cryptoFunc.makeAuthNumber();
+            await mail.makeMail(authNumber, user_email);
+            authCache.set(user_email, authNumber);
+        } else
+            return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원정보가 없습니다.'));
+        
+        const authNumber = await cryptoFunc.makeAuthNumber();
+        await mail.makeMail(authNumber, user_email);
+        authCache.set(user_email, authNumber);
+
+        return res.json(util.dataReply(dataReply, true, 200, '인증번호가 전송되었습니다.', { authNumber }));
     } catch (err) {
         console.log(err);
 
