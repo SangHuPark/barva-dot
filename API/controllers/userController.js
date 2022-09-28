@@ -177,8 +177,10 @@ exports.findId = async (req, res) => {
 
     try {
         var findIdInfo = await userService.findUserId(user_name, user_email);
-        if(!findIdInfo)
+        if(findIdInfo.length === 0)
             return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원 정보가 없습니다.'));
+
+        console.log(findIdInfo);
 
         return res.json(util.makeReply(reply, true, 200, `회원님의 아이디는 < ${findIdInfo[0].user_id} > 입니다.`));
     } catch (err) {
