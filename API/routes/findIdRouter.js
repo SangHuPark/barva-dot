@@ -5,6 +5,6 @@ const form = require('../validation/form.js');
 const router = express.Router();
 
 router.route('/')
-    .post(form.emailCheck, userController.findId);
+    .post(form.findIdForm, userController.findId);
 
 module.exports = router;
