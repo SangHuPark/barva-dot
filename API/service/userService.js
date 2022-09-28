@@ -74,14 +74,15 @@ exports.importUserName = async (user_id) => {
     return importUserInfo;
 }
 
-exports.findUserId = async (user_email) => {
-    const importUserId = await prisma.User.findUnique({
+exports.findUserId = async (user_name, user_email) => {
+    const importUserId = await prisma.User.findMany({
         where: {
+            user_name,
             user_email,
         },
         select: {
             user_id: true,
-        },
+        }
     });
 
     return importUserId;
