@@ -1,6 +1,6 @@
 const express = require('express');
-const userController = require('../controllers/userController.js');
-const form = require('../validation/form.js');
+
+const userController = require('../../controllers/userController.js');
 
 const router = express.Router();
 
