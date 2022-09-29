@@ -4,20 +4,20 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // 회원 관련 라우터
-var loginRouter = require('./API/routes/userRouter/loginRouter.js');
-var enrollRouter = require('./API/routes/userRouter/enrollRouter.js');
-var duplicatedIdRouter = require('./API/routes/userRouter/duplicatedIdRouter.js');
-var duplicatedNickRouter = require('./API/routes/userRouter/duplicatedNickRouter.js');
-var authMailRouter = require('./API/routes/userRouter/authMailRouter.js');
-var inspectMailRouter = require('./API/routes/userRouter/inspectMailRouter.js');
-var findIdRouter = require('./API/routes/userRouter/findIdRouter.js');
-var findPwRouter = require('./API/routes/userRouter/findPwRouter.js');
-var findPwMailRouter = require('./API/routes/userRouter/findPwMailRouter.js');
-var updatePwRouter = require('./API/routes/userRouter/updatePwRouter.js');
-var resignRouter = require('./API/routes/userRouter/resignRouter.js');
+var loginRouter = require('./src/routes/userRouter/loginRouter.js');
+var enrollRouter = require('./src/routes/userRouter/enrollRouter.js');
+var duplicatedIdRouter = require('./src/routes/userRouter/duplicatedIdRouter.js');
+var duplicatedNickRouter = require('./src/routes/userRouter/duplicatedNickRouter.js');
+var authMailRouter = require('./src/routes/userRouter/authMailRouter.js');
+var inspectMailRouter = require('./src/routes/userRouter/inspectMailRouter.js');
+var findIdRouter = require('./src/routes/userRouter/findIdRouter.js');
+var findPwRouter = require('./src/routes/userRouter/findPwRouter.js');
+var findPwMailRouter = require('./src/routes/userRouter/findPwMailRouter.js');
+var updatePwRouter = require('./src/routes/userRouter/updatePwRouter.js');
+var resignRouter = require('./src/routes/userRouter/resignRouter.js');
 
 // 홈 관련 라우터
-var profileRouter = require('./API/routes/homeRouter/userProfileRouter.js');
+var profileRouter = require('./src/routes/homeRouter/userProfileRouter.js');
 
 const app = express();
 
