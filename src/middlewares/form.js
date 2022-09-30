@@ -3,16 +3,13 @@ const util = require('../function/replyFunc.js');
 
 var dataReply = {};
 
-exports.enrollCheck = async (req, res, next) => {  
-    var { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email, marketing } = req.body;
-    var body =  { user_name, user_nick, user_id, user_pw, user_confirmPw, user_email, marketing }
-
+exports.signUpForm = async (newUserInfo) => {  
     var user_name_pattern = /^[가-힣|a-z|A-Z]+$/;
     var user_nick_pattern = /^[가-힣|a-z|A-Z|0-9]+$/;
     var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
     var user_pw_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
     
-    var enrollSchema = Joi.object().keys({ 
+    var signUpSchema = Joi.object().keys({ 
         user_name: Joi.string()
             .min(2)
             .max(10)
@@ -40,7 +37,7 @@ exports.enrollCheck = async (req, res, next) => {
         .with('user_pw', 'user_confirmPw');
 
     try { // 검사 
-    	await enrollSchema.validateAsync(body); 
+    	await signUpSchema.validateAsync(newUserInfo); 
 
         return next();
     } catch (err) { // 에러 
@@ -50,9 +47,35 @@ exports.enrollCheck = async (req, res, next) => {
     }
 }
 
-exports.idCheck = async (req, res, next) => {
-    var user_id = req.body;
+exports.loginForm = async (loginData) => {
+    var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
+    var user_pw_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
+    
+    var loginSchema = Joi.object().keys({ 
+        user_id: Joi.string()
+            .min(5)
+            .max(15)
+            .pattern(new RegExp(user_id_pattern))
+            .required(),
+        user_pw: Joi.string()
+            .min(6)
+            .max(15)
+            .pattern(new RegExp(user_pw_pattern))
+            .required(),
+        })
 
+    try { // 검사 
+    	await loginSchema.validateAsync(body); 
+
+        return next();
+    } catch (err) { // 에러 
+        console.log(err);
+
+    	return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: err.message }));
+    }
+}
+
+exports.idCheck = async (user_id) => {
     var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
 
     var idSchema = Joi.object().keys({
@@ -74,9 +97,7 @@ exports.idCheck = async (req, res, next) => {
     }
 }
 
-exports.nickCheck = async (req, res, next) => {
-    var user_nick = req.body;
-
+exports.nickCheck = async (user_nick) => {
     var user_nick_pattern = /^[가-힣|a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
 
     var nickSchema = Joi.object().keys({
@@ -98,9 +119,7 @@ exports.nickCheck = async (req, res, next) => {
     }
 }
 
-exports.emailForm = async (req, res, next) => {
-    var user_email = req.body;
-
+exports.emailForm = async (user_email) => {
     var emailSchema = Joi.object().keys({
         user_email: Joi.string()
             .email()

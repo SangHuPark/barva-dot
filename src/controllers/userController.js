@@ -7,7 +7,8 @@ dotenv.config();
 const userService = require('../service/userService.js');
 const cryptoFunc = require('../function/cryptoFunc.js');
 const util = require('../function/replyFunc.js');
-const mail = require('../validation/mailFunc.js');
+const mail = require('../middlewares/mailFunc.js');
+const form = require('../middlewares/form.js');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -17,13 +18,16 @@ var reply = {};
 var dataReply = {};
 
 // 회원가입
-exports.enroll = async (req, res) => {
-    const { user_name, user_nick, user_id, user_pw, user_email, marketing } = req.body;
+exports.signUp = async (req, res) => {
+    const newUserInfo = req.body;
+    const { user_name, user_nick, user_id, user_pw, user_email, marketing } = newUserInfo;
     
     try {
+        await form.signUpForm(newUserInfo);
+
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
-        const newUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing };
-        await userService.insertUser(newUserInfo);
+        const insertUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing };
+        await userService.insertUser(insertUserInfo);
 
         return res.json(util.makeReply(reply, true, 200, '회원가입을 성공하였습니다.'));
     } catch (err) {
@@ -34,10 +38,12 @@ exports.enroll = async (req, res) => {
 }
 
 // 아이디 중복 검사
-exports.duplicatedIdCheck = async (req, res) => {
+exports.isExistId = async (req, res) => {
     const user_id = req.body.user_id;
 
     try {
+        await form.idCheck(user_id);
+
         var enrollIdCheck = await userService.existIdCheck(user_id);
         
         if(enrollIdCheck) 
@@ -52,10 +58,12 @@ exports.duplicatedIdCheck = async (req, res) => {
 }
 
 // 닉네임 중복 검사
-exports.duplicatedNickCheck = async (req, res) => {
+exports.isExistNick = async (req, res) => {
     const user_nick = req.body.user_nick;
 
     try {
+        await form.nickCheck(user_nick);
+
         var enrollNickCheck = await userService.existNickCheck(user_nick);
         
         if(enrollNickCheck)
@@ -76,6 +84,8 @@ exports.sendMail = async (req, res) => {
     authCache.del(user_email);
 
     try {
+        await form.emailForm(user_email);
+
         var enrollMailCheck = await userService.existMailCheck(user_email);
             
         if(enrollMailCheck === true) 
@@ -94,7 +104,7 @@ exports.sendMail = async (req, res) => {
 }
 
 // 인증번호 확인
-exports.authUser = async (req, res) => {
+exports.authMail = async (req, res) => {
     const { user_email, confirmNumber } = req.body;
 
     try {
@@ -113,7 +123,7 @@ exports.authUser = async (req, res) => {
 
 // 로그인
 exports.login = async (req, res) => {
-    const { user_id, user_pw } = req.body;
+    const loginData = req.body;
     const user_name = await userService.importUserName(user_id);
 
     if(!user_id)
@@ -122,11 +132,13 @@ exports.login = async (req, res) => {
         return res.json(util.makeReply(reply, false, 309, '비밀번호를 입력해주세요.'));
 
     try {
-        var loginCheck = await userService.existIdCheck(user_id);
+        await form.loginForm(loginData);
+
+        var loginCheck = await userService.existIdCheck(loginData.user_id);
         if(!loginCheck)
             return res.json(util.makeReply(reply, false, 310, '등록되지 않은 회원정보입니다.')); 
 
-        var checkPw = await cryptoFunc.makePasswordHashed(user_id, user_pw);
+        var checkPw = await cryptoFunc.makePasswordHashed(loginData.user_id, loginData.user_pw);
         if(checkPw !== loginCheck.user_pw)
             return res.json(util.makeReply(reply, false, 311, '아이디 또는 비밀번호를 확인하세요.'));
 

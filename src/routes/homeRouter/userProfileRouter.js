@@ -1,7 +1,7 @@
 const express = require('express');
 
 const postController = require('../../controllers/homeController.js');
-const jwt = require('../../validation/jwt.js'); 
+const jwt = require('../../middlewares/jwt.js'); 
 
 const router = express.Router();
 
