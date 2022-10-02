@@ -1,9 +1,9 @@
-const Joi = require('joi');
-const util = require('../function/replyFunc.js');
+import Joi from "joi";
+import * as util from "../function/replyFunc.js";
 
 var dataReply = {};
 
-exports.signUpForm = async (newUserInfo) => {  
+export async function signUpForm(newUserInfo) {  
     var user_name_pattern = /^[가-힣|a-z|A-Z]+$/;
     var user_nick_pattern = /^[가-힣|a-z|A-Z|0-9]+$/;
     var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
@@ -39,15 +39,15 @@ exports.signUpForm = async (newUserInfo) => {
     try { // 검사 
     	await signUpSchema.validateAsync(newUserInfo); 
 
-        return next();
+        return true;
     } catch (err) { // 에러 
         console.log(err);
 
-    	return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: err.message }));
+    	return err.message;
     }
 }
 
-exports.loginForm = async (loginData) => {
+export async function loginForm(loginData) {
     var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
     var user_pw_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
     
@@ -65,17 +65,17 @@ exports.loginForm = async (loginData) => {
         })
 
     try { // 검사 
-    	await loginSchema.validateAsync(body); 
+    	await loginSchema.validateAsync(loginData); 
 
-        return next();
+        return true;
     } catch (err) { // 에러 
         console.log(err);
 
-    	return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: err.message }));
+    	return err.message;
     }
 }
 
-exports.idCheck = async (user_id) => {
+export async function idForm(user_id) {
     var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
 
     var idSchema = Joi.object().keys({
@@ -89,15 +89,15 @@ exports.idCheck = async (user_id) => {
     try {
         await idSchema.validateAsync(user_id);
 
-        return next();
+        return true;
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(dataReply, false, 301, "아이디 형식이 올바르지 않습니다.", { err: err.message }));
+        return err.message;
     }
 }
 
-exports.nickCheck = async (user_nick) => {
+export async function nickForm(user_nick) {
     var user_nick_pattern = /^[가-힣|a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
 
     var nickSchema = Joi.object().keys({
@@ -111,15 +111,15 @@ exports.nickCheck = async (user_nick) => {
     try {
         await nickSchema.validateAsync(user_nick);
 
-        return next();
+        return true;
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", { err: err.message }));
+        return err.message;
     }
 }
 
-exports.emailForm = async (user_email) => {
+export async function emailForm(user_email) {
     var emailSchema = Joi.object().keys({
         user_email: Joi.string()
             .email()
@@ -129,17 +129,15 @@ exports.emailForm = async (user_email) => {
     try {
         await emailSchema.validateAsync(user_email);
 
-        return next();
+        return true;
     } catch(err) {
         console.log(err);
 
-        return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: err.message }));
+        return err.message;
     }
 }
 
-exports.findIdForm = async (req, res, next) => {
-    var body = req.body;
-
+export async function findIdForm(findIdData) {
     var user_name_pattern = /^[가-힣|a-z|A-Z]+$/;
 
     var findIdSchema = Joi.object().keys({
@@ -154,38 +152,12 @@ exports.findIdForm = async (req, res, next) => {
     })
 
     try {
-        await findIdSchema.validateAsync(body);
+        await findIdSchema.validateAsync(findIdData);
 
-        return next();
+        return true;
     } catch(err) {
         console.log(err);
 
-        return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: err.message }));
-    }
-}
-
-exports.pwCheck = async (req, res, next) => {
-    var { user_pw, user_confirmPw } = req.body;
-    var newPw = { user_pw, user_confirmPw };
-
-    var user_pw_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
-
-    var pwSchema = Joi.object().keys({
-        user_pw: Joi.string()
-            .min(6)
-            .max(15)
-            .pattern(new RegExp(user_pw_pattern))
-            .required(), 
-        user_confirmPw: Joi.string().valid(Joi.in('user_pw')),
-    })
-
-    try {
-        await pwSchema.validateAsync(newPw);
-
-        return next();
-    } catch(err) {
-        console.log(err);
-
-        return res.json(util.dataReply(dataReply, false, 312, "비밀번호를 확인하세요.", { err: err.message }));
+        return err.message;
     }
 }

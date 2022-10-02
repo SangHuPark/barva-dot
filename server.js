@@ -1,7 +1,7 @@
-const express = require('express');
-const dotenv = require('dotenv');
+import express from "express";
+import dotenv from "dotenv";
 
-const router = require('./src/routes/index.js');
+import router from "./src/routes/index.js";
 
 dotenv.config();
 
@@ -21,27 +21,3 @@ async function startServer() {
 }
 
 startServer();
-
-// 회원 관련 라우터
-var findIdRouter = require('./src/routes/userRouter/findIdRouter.js');
-var findPwRouter = require('./src/routes/userRouter/findPwRouter.js');
-var findPwMailRouter = require('./src/routes/userRouter/findPwMailRouter.js');
-var updatePwRouter = require('./src/routes/userRouter/updatePwRouter.js');
-var resignRouter = require('./src/routes/userRouter/resignRouter.js');
-
-// 홈 관련 라우터
-var profileRouter = require('./src/routes/homeRouter/userProfileRouter.js');
-
-// 회원 관련 경로
-app.use('/findId', findIdRouter);
-app.use('/findPw', findPwRouter);
-app.use('/findPwMail', findPwMailRouter);
-app.use('/updatePw', updatePwRouter);
-app.use('/resign', resignRouter);
-
-// 홈 관련 경로
-app.use('/userProfile', profileRouter);
-
-/** app.use((req, res) => {
-    console.log(req.url);
-}) */

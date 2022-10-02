@@ -1,4 +1,4 @@
-exports.makeReply = (reply, isSuccess, code, message) => {
+export function makeReply(reply, isSuccess, code, message) {
     reply.isSuccess = isSuccess;
     reply.code = code;
     reply.message = message;
@@ -6,11 +6,11 @@ exports.makeReply = (reply, isSuccess, code, message) => {
     return reply;
 }
 
-exports.dataReply = (dataReply, isSuccess, code, message, data ) => {
-    dataReply.isSuccess = isSuccess;
-    dataReply.code = code;
-    dataReply.message = message;
-    dataReply.data = data;
+export function dataReply(reply, isSuccess, code, message, data ) {
+    reply.isSuccess = isSuccess;
+    reply.code = code;
+    reply.message = message;
+    reply.data = data;
 
-    return dataReply;
+    return reply;
 }

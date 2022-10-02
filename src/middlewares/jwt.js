@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const util = require('../function/replyFunc.js');
+import jwt from "jsonwebtoken";
+import * as util from "../function/replyFunc.js";
 
-exports.auth = async (req, res, next) => {
+export default async (req, res, next) => {
   try {
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET_KEY);
     

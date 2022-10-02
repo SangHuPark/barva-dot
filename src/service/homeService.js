@@ -1,7 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-exports.findUserProfile = async (user_id) => {
+export async function findUserProfile(user_id) {
 
 }

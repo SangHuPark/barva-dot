@@ -1,14 +1,13 @@
-const dotenv = require('dotenv');
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const homeService = require('../service/homeService.js');
-const util = require('../function/replyFunc.js');
+import * as homeService from "../service/homeService.js";
+import * as util from "../function/replyFunc.js";
 
-var reply = {};
 var dataReply = {};
 
-exports.userProfile = async (req, res) => {
+export async function myProfile(req, res) {
     const user_id = req.decoded.user_id;
     
     try {

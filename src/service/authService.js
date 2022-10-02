@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-exports.existIdCheck = async (user_id) => {
+export async function existIdCheck(user_id) {
     const idData = await prisma.User.findUnique({ 
         where : {
             user_id,
@@ -12,7 +12,7 @@ exports.existIdCheck = async (user_id) => {
     return idData;
 }
 
-exports.existNickCheck = async (user_nick) => {
+export async function existNickCheck(user_nick) {
     const nickData = await prisma.User.findUnique({ 
         where : {
             user_nick,
@@ -22,7 +22,7 @@ exports.existNickCheck = async (user_nick) => {
     return nickData;
 }
 
-exports.existMailCheck = async (user_email) => {
+export async function existMailCheck(user_email) {
     const mailData = await prisma.User.findUnique({
         where : {
             user_email,
@@ -35,7 +35,7 @@ exports.existMailCheck = async (user_email) => {
         return true;
 }
 
-exports.insertUser = async (newUserInfo) => {
+export async function insertUser(newUserInfo) {
     const {
         user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing
     } = newUserInfo;
@@ -61,7 +61,7 @@ exports.insertUser = async (newUserInfo) => {
     return newUser;
 }
 
-exports.importUserName = async (user_id) => {
+export async function importUserName(user_id) {
     const importUserInfo = await prisma.User.findUnique({
         where: {
             user_id,
@@ -74,11 +74,11 @@ exports.importUserName = async (user_id) => {
     return importUserInfo;
 }
 
-exports.findUserId = async (user_name, user_email) => {
+export async function findUserId(findIdData) {
     const importUserId = await prisma.User.findMany({
         where: {
-            user_name,
-            user_email,
+            user_name: findIdData.user_name,
+            user_email: findIdData.user_email,
         },
         select: {
             user_id: true,
@@ -88,7 +88,7 @@ exports.findUserId = async (user_name, user_email) => {
     return importUserId;
 }
 
-exports.updateUserPw = async (updateUserInfo) => {
+export async function updateUserPw(updateUserInfo) {
     const { user_id, hashed_pw, pw_salt } = updateUserInfo;
 
     const updateUserResult = await prisma.User.updateMany({
@@ -104,7 +104,7 @@ exports.updateUserPw = async (updateUserInfo) => {
     return updateUserResult;
 }
 
-exports.deleteUser = async (user_id) => {
+export async function deleteUser(user_id) {
     const deleteUserInfo = await prisma.User.findUnique({
         where: { 
             user_id,

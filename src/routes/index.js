@@ -1,10 +1,13 @@
-const express = require('express');
-const auth = require('./userRouter/auth.js');
+import { Router } from "express";
 
-exports.router = async () => {
-    const app = express.Router();
+import auth from "./auth.js";
+import feed from "./feed.js";
+
+export default () => {
+    const app = Router();
 
     auth(app);
+    feed(app);
 
     return app;
 }

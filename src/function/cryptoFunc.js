@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-const { PrismaClient } = require('@prisma/client');
+import crypto from "crypto";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +11,7 @@ const createSalt = () =>
         });
     });
 
-exports.createHashedPassword = async (plainPassword) => {
+export async function createHashedPassword(plainPassword) {
     return new Promise(async (resolve, reject) => {
         const salt = await createSalt();
         crypto.pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
@@ -21,7 +21,7 @@ exports.createHashedPassword = async (plainPassword) => {
     });
 }
 
-exports.makePasswordHashed = async (userId, plainPassword) => {
+export async function makePasswordHashed(userId, plainPassword) {
     return new Promise(async (resolve, reject) => {
         const salt = await prisma.users
             .findUnique({
@@ -37,7 +37,7 @@ exports.makePasswordHashed = async (userId, plainPassword) => {
     });
 }
 
-exports.makeAuthNumber = async () => {
+export async function makeAuthNumber() {
     const code = crypto.randomBytes(3).toString('hex');
 
     return code;
