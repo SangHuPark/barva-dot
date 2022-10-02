@@ -15,6 +15,7 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const authCache = new nodeCache( { stdTTL: 0, checkperiod: 600 } );
 
 var reply = {};
+var dataReply = {};
 
 // 회원가입
 export async function signUp(req, res) {
@@ -34,7 +35,7 @@ export async function signUp(req, res) {
     } catch (err) {
         console.log(err);
         
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -45,7 +46,7 @@ export async function isExistId(req, res) {
     try {
         var formResult = await form.idForm( { user_id });
         if(formResult !== true)
-            return res.json(util.dataReply(reply, false, 301, '아이디 형식이 올바르지 않습니다.', { err: formResult }));
+            return res.json(util.dataReply(dataReply, false, 301, '아이디 형식이 올바르지 않습니다.', { err: formResult }));
 
         var enrollIdCheck = await authService.existIdCheck(user_id);
         if(enrollIdCheck) 
@@ -55,7 +56,7 @@ export async function isExistId(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -77,7 +78,7 @@ export async function isExistNick(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -101,11 +102,11 @@ export async function sendMail(req, res) {
         await mail.makeMail(authNumber, user_email);
         authCache.set(user_email, authNumber);
 
-        return res.json(util.dataReply(reply, true, 200, '인증번호가 전송되었습니다.', { authNumber }));
+        return res.json(util.dataReply(dataReply, true, 200, '인증번호가 전송되었습니다.', { authNumber }));
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -123,7 +124,7 @@ export async function authMail(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -159,11 +160,11 @@ export async function login(req, res) {
             issuer: user_name.toString(),
           });
 
-        return res.json(util.dataReply(reply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
+        return res.json(util.dataReply(dataReply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -187,7 +188,7 @@ export async function resign(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -210,13 +211,13 @@ export async function findId(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
 // 비밀번호 찾기
 export async function findPw(req, res) {
-    const { user_id } = req.body;
+    const user_id = req.body.user_id;
 
     if(!user_id)
         return res.json(util.makeReply(reply, false, 308, '아이디를 입력해주세요.'));
@@ -230,7 +231,7 @@ export async function findPw(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -241,7 +242,9 @@ export async function findPwMail(req, res) {
     authCache.del(user_email);
 
     try {
-        await form.emailForm(user_email);
+        const formResult = await form.emailForm(user_email);
+        if(formResult !== true)
+            return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
         var enrollMailCheck = await authService.existMailCheck(user_email);
             
@@ -256,11 +259,11 @@ export async function findPwMail(req, res) {
         await mail.makeMail(authNumber, user_email);
         authCache.set(user_email, authNumber);
 
-        return res.json(util.dataReply(reply, true, 200, '인증번호가 전송되었습니다.', { authNumber }));
+        return res.json(util.dataReply(dataReply, true, 200, '인증번호가 전송되었습니다.', { authNumber }));
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
 
@@ -277,6 +280,6 @@ export async function updatePw(req, res) {
     } catch (err) {
         console.log(err);
 
-        return res.json(util.dataReply(reply, false, 500, 'Server error response', { err: err.message }));
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
