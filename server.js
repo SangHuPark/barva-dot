@@ -15,8 +15,8 @@ async function startServer() {
 
     app.use(router());
 
-    app.listen(app.get('port'), () => {
-        console.log(`Server start listening on ${app.get('port')} port...`);
+    app.listen(app.get('port'), (port) => {
+        console.log(`Server start listening on ${port} port...`);
     });
 }
 
