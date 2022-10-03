@@ -44,7 +44,7 @@ export async function isExistId(req, res) {
     const user_id = req.body.user_id;
 
     try {
-        var formResult = await form.idForm( { user_id });
+        var formResult = await form.idForm( { user_id } );
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 301, '아이디 형식이 올바르지 않습니다.', { err: formResult }));
 
@@ -65,7 +65,7 @@ export async function isExistNick(req, res) {
     const user_nick = req.body.user_nick;
 
     try {
-        var formResult = await form.nickForm(user_nick);
+        var formResult = await form.nickForm( { user_nick } );
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", { err: formResult }));
 
@@ -74,7 +74,7 @@ export async function isExistNick(req, res) {
         if(enrollNickCheck)
             return res.json(util.makeReply(reply, false, 304, '이미 사용 중인 닉네임입니다.'));
         else
-            return res.json(util.makeReply(reply, true, 200, '사용 가능한 이름입니다.'));
+            return res.json(util.makeReply(reply, true, 200, '사용 가능한 닉네임입니다.'));
     } catch (err) {
         console.log(err);
 
