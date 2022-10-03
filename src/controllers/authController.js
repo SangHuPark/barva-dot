@@ -7,7 +7,7 @@ dotenv.config();
 import * as authService from "../service/authService.js";
 import * as cryptoFunc from "../function/cryptoFunc.js";
 import * as util from "../function/replyFunc.js";
-import mail from "../function/mailFunc.js";
+import * as mail from "../function/mailFunc.js";
 import * as form from "../middlewares/form.js";
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;

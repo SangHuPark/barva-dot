@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export default async (authNumber, user_mail) => {
+export async function makeMail(authNumber, user_mail) {
     const smtpTransport = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
