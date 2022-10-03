@@ -16,10 +16,10 @@ export async function makeMail(authNumber, user_mail) {
         text: `인증번호는 ${authNumber}입니다.`
     };
 
-    await smtpTransport.sendMail(mailOptions, (err) => {
-        if(err)
+    smtpTransport.sendMail(mailOptions, (err) => {
+        if (err)
             throw new Error(err);
-        
+
         smtpTransport.close();
     })
 }
