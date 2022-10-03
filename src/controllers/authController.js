@@ -89,7 +89,7 @@ export async function sendMail(req, res) {
     authCache.del(user_email);
 
     try {
-        var formResult = await form.emailForm(user_email);
+        var formResult = await form.emailForm( { user_email } );
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
@@ -242,7 +242,7 @@ export async function findPwMail(req, res) {
     authCache.del(user_email);
 
     try {
-        const formResult = await form.emailForm(user_email);
+        const formResult = await form.emailForm( { user_email } );
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
