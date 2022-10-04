@@ -269,10 +269,10 @@ export async function findPwMail(req, res) {
 
 // 비밀번호 재설정
 export async function updatePw(req, res) {
-    const { user_id, user_pw } = req.body;
+    const { user_id, user_updatePw } = req.body;
 
     try {
-        var { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
+        var { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_updatePw);
         var updateUserInfo = { user_id, hashed_pw, pw_salt };
         await authService.updateUserPw(updateUserInfo);
 
