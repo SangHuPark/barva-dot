@@ -19,6 +19,4 @@ export default async (app) => {
     route.post('/findPwMail', authController.findPwMail);
     route.put('/updatePw', authController.updatePw);
     route.delete('/resign', jwt, authController.resign);
-
-    
 }
