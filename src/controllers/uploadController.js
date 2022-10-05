@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
 
 dotenv.config();
 
@@ -19,4 +21,9 @@ export async function myProfile(req, res) {
         
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
+}
+
+export async function test(req, res) {
+    const path = req.body;
+    return res.json(util.dataReply(dataReply, true, 200, "Image Upload Success", { path }));
 }

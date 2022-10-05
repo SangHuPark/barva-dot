@@ -1,13 +1,13 @@
 import { Router } from "express";
 
 import auth from "./auth.js";
-import feed from "./feed.js";
+import upload from "./upload.js";
 
 export default () => {
     const app = Router();
 
     auth(app);
-    feed(app);
+    upload(app);
 
     return app;
 }
