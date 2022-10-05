@@ -7,6 +7,7 @@ dotenv.config();
 import * as homeService from "../service/homeService.js";
 import * as util from "../function/replyFunc.js";
 
+var reply = {};
 var dataReply = {};
 
 export async function myProfile(req, res) {
@@ -24,6 +25,5 @@ export async function myProfile(req, res) {
 }
 
 export async function test(req, res) {
-    const path = req.body;
-    return res.json(util.dataReply(dataReply, true, 200, "Image Upload Success", { path }));
+    return res.json(util.makeReply(reply, true, 200, "Image Upload Success"));
 }
