@@ -200,7 +200,7 @@ export async function findId(req, res) {
             return res.json(util.dataReply(dataReply, false, 305, "이름 혹은 이메일 형식이 올바르지 않습니다.", { err: err.message }));
 
         var findIdInfo = await authService.findUserId(findIdData);
-        console.log(findIdInfo);
+        
         if(findIdInfo.length === 0)
             return res.json(util.makeReply(reply, false, 314, '해당 이름 혹은 이메일로 가입된 회원정보가 없습니다.'));
 
