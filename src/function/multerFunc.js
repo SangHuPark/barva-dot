@@ -18,7 +18,7 @@ var fileStorage = multer.diskStorage({
   },
   //파일이름
   filename: (req, file, cb) => {
-    cb(null, new Date().valueOf() + path.extname(file.originalname));
+    cb(null, file.originalname);
   },
 });
 
