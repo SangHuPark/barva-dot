@@ -48,8 +48,8 @@ export async function isExistId(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 301, '아이디 형식이 올바르지 않습니다.', { err: formResult }));
 
-        var enrollIdCheck = await authService.existIdCheck(user_id);
-        if(enrollIdCheck) 
+        var signUpIdCheck = await authService.existIdCheck(user_id);
+        if(signUpIdCheck) 
             return res.json(util.makeReply(reply, false, 302, '이미 사용 중인 아이디입니다.')); 
         else
             return res.json(util.makeReply(reply, true, 200, '사용 가능한 아이디입니다.'));
@@ -69,9 +69,8 @@ export async function isExistNick(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", { err: formResult }));
 
-        var enrollNickCheck = await authService.existNickCheck(user_nick);
-        
-        if(enrollNickCheck)
+        var signUpNickCheck = await authService.existNickCheck(user_nick);
+        if(signUpNickCheck)
             return res.json(util.makeReply(reply, false, 304, '이미 사용 중인 닉네임입니다.'));
         else
             return res.json(util.makeReply(reply, true, 200, '사용 가능한 닉네임입니다.'));
@@ -93,9 +92,8 @@ export async function sendMail(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
-        var enrollMailCheck = await authService.existMailCheck(user_email);
-            
-        if(enrollMailCheck === true) 
+        var signUpMailCheck = await authService.existMailCheck(user_email);
+        if(signUpMailCheck === true) 
             return res.json(util.makeReply(reply, false, 306, '이미 가입된 메일 정보입니다.'));
         
         const authNumber = await cryptoFunc.makeAuthNumber();
@@ -133,9 +131,9 @@ export async function login(req, res) {
     const loginData = req.body;
     const user_name = await authService.importUserName(loginData.user_id);
 
-    if(!user_id)
+    if(!loginData.user_id)
         return res.json(util.makeReply(reply, false, 308, '아이디를 입력해주세요.'));
-    if(!user_pw)
+    if(!loginData.user_pw)
         return res.json(util.makeReply(reply, false, 309, '비밀번호를 입력해주세요.'));
 
     try {
@@ -151,13 +149,13 @@ export async function login(req, res) {
         if(checkPw !== loginCheck.user_pw)
             return res.json(util.makeReply(reply, false, 311, '아이디 또는 비밀번호를 확인하세요.'));
 
-        token = jwt.sign({
+        const token = jwt.sign({
             type: 'JWT',
-            user_id: user_id,
+            user_id: loginData.user_id,
             user_name: user_name
           }, JWT_SECRET_KEY, {
             expiresIn: '100y',
-            issuer: user_name.toString(),
+            issuer: user_name,
           });
 
         return res.json(util.dataReply(dataReply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
@@ -202,10 +200,9 @@ export async function findId(req, res) {
             return res.json(util.dataReply(dataReply, false, 305, "이름 혹은 이메일 형식이 올바르지 않습니다.", { err: err.message }));
 
         var findIdInfo = await authService.findUserId(findIdData);
-        if(findIdInfo.length === 0)
-            return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원정보가 없습니다.'));
-
         console.log(findIdInfo);
+        if(findIdInfo.length === 0)
+            return res.json(util.makeReply(reply, false, 314, '해당 이름 혹은 이메일로 가입된 회원정보가 없습니다.'));
 
         return res.json(util.makeReply(reply, true, 200, `회원님의 아이디는 < ${findIdInfo[0].user_id} > 입니다.`));
     } catch (err) {
@@ -247,7 +244,6 @@ export async function findPwMail(req, res) {
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
         var enrollMailCheck = await authService.existMailCheck(user_email);
-            
         if(enrollMailCheck === true) {
             const authNumber = await cryptoFunc.makeAuthNumber();
             await mail.makeMail(authNumber, user_email);

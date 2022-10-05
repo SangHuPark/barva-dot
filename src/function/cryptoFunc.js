@@ -23,14 +23,13 @@ export async function createHashedPassword(plainPassword) {
 
 export async function makePasswordHashed(userId, plainPassword) {
     return new Promise(async (resolve, reject) => {
-        const salt = await prisma.users
-            .findUnique({
+        const salt = await prisma.User.findMany({
                 where: {
                     user_id: userId,
                 },
-            })
-            .then((result) => result.pw_salt)
-        crypto.pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
+            });
+
+        crypto.pbkdf2(plainPassword, salt[0].pw_salt, 9999, 64, 'sha512', (err, key) => {
             if (err) reject(err);
             resolve(key.toString('base64'));
         });

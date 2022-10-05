@@ -3,33 +3,42 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function existIdCheck(user_id) {
-    const idData = await prisma.User.findUnique({ 
+    const existIdResult = await prisma.User.findUnique({ 
         where : {
             user_id,
         }
+    })
+    .catch(() => {
+        throw new Error(err);
     });
 
-    return idData;
+    return existIdResult;
 }
 
 export async function existNickCheck(user_nick) {
-    const nickData = await prisma.User.findUnique({ 
+    const existNickResult =  await prisma.User.findUnique({ 
         where : {
             user_nick,
         },
+    })
+    .catch(() => {
+        throw new Error(err);
     });
 
-    return nickData;
+    return existNickResult;
 }
 
 export async function existMailCheck(user_email) {
-    const mailData = await prisma.User.findUnique({
+    const existMailResult = await prisma.User.findUnique({
         where : {
             user_email,
         },
+    })
+    .catch((err) => {
+        throw new Error(err);
     });
 
-    if(!mailData)
+    if(!existMailResult)
         return false;
     else
         return true;
@@ -40,7 +49,7 @@ export async function insertUser(newUserInfo) {
         user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing
     } = newUserInfo;
 
-    const newUser = await prisma.User.create({
+    await prisma.User.create({
         data: {
             user_name,
             user_nick,
@@ -58,24 +67,27 @@ export async function insertUser(newUserInfo) {
         throw new Error(err);
     });
 
-    return newUser;
+    // return newUser;
 }
 
 export async function importUserName(user_id) {
-    const importUserInfo = await prisma.User.findUnique({
+    const importNameResult = await prisma.User.findMany({
         where: {
             user_id,
         },
         select: {
             user_name: true,
         },
+    })
+    .catch((err) => {
+        throw new Error(err);
     });
 
-    return importUserInfo;
+    return importNameResult[0].user_name;
 }
 
 export async function findUserId(findIdData) {
-    const importUserId = await prisma.User.findMany({
+    const findIdResult = await prisma.User.findMany({
         where: {
             user_name: findIdData.user_name,
             user_email: findIdData.user_email,
@@ -83,15 +95,34 @@ export async function findUserId(findIdData) {
         select: {
             user_id: true,
         }
+    })
+    .catch((err) => {
+        throw new Error(err);
     });
 
-    return importUserId;
+    return findIdResult;
+}
+
+export async function findUserPw(findPwData) {
+    await prisma.User.findMany({
+        where: {
+            user_name: findPwData.user_name,
+            user_id: findPwData.user_id,
+        },
+
+    })
+    .then(() => {
+        return true;
+    })
+    .catch(() => {
+        return false;
+    })
 }
 
 export async function updateUserPw(updateUserInfo) {
     const { user_id, hashed_pw, pw_salt } = updateUserInfo;
 
-    const updateUserResult = await prisma.User.updateMany({
+    await prisma.User.updateMany({
         where: {
             user_id,
         },
@@ -101,7 +132,7 @@ export async function updateUserPw(updateUserInfo) {
         },
     });
 
-    return updateUserResult;
+    // return updateUserResult;
 }
 
 export async function deleteUser(user_id) {
