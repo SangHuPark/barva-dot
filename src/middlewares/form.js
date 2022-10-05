@@ -30,11 +30,9 @@ export async function signUpForm(newUserInfo) {
             .max(15)
             .pattern(new RegExp(user_pw_pattern))
             .required(), 
-        user_confirmPw: Joi.string().valid(Joi.in('user_pw')),
         user_email: Joi.string().email().required(),
         marketing: Joi.boolean().required(),
         })
-        .with('user_pw', 'user_confirmPw');
 
     try { // 검사 
     	await signUpSchema.validateAsync(newUserInfo); 
