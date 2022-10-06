@@ -25,7 +25,7 @@ export async function myProfile(req, res) {
 }
 
 export async function test(req, res) {
-    const image_url = req.file.location;
+    // const image_url = req.file.location;
     return res.json(util.makeReply(reply, true, 200, "Image Upload Success"));
 }
 
