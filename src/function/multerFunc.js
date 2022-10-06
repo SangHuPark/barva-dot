@@ -1,45 +1,36 @@
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import multerS3 from 'multer-s3';
+import * as path from 'path';
+import AWS from 'aws-sdk';
 
+const __dirname = path.resolve();
+const s3config = path.join(__dirname, "./src/config/awss3config.json");
 // app.use('/', express.static(path.join(__dirname, "./uploads/1663155762972.jpg")));
 
-try {
-  fs.readdirSync("upload");
-} catch (err) {
-  console.error("Not Exist 'upload' Folder. Creating Folder...");
-  fs.mkdirSync("upload");
-}
+AWS.config.loadFromPath(s3config);
 
-var fileStorage = multer.diskStorage({
-  // 저장 폴더 위치
-  destination: (req, file, cb) => {
-    cb(null, "upload/");
-  },
-  //파일이름
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
+// var fileStorage = multer.diskStorage({
+//   // 저장 폴더 위치
+//   destination: (req, file, cb) => {
+//     cb(null, "upload/");
+//   },
+//   //파일이름
+//   filename: (req, file, cb) => {
+//     cb(null, new Date().valueOf() + '-' + file.originalname);
+//     // new Date().valueOf() + path.extname(file.originalname)
+//   },
+// });
+
+const s3 = new AWS.S3();
+
+// multer 에 대한 설정값
+export const awsUpload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'barva-dot', // 객체를 업로드할 버킷 이름
+    acl: 'public-read', // Access control for the file
+    key: function (req, file, cb) { // 객체의 키로 고유한 식별자 이기 때문에 겹치면 안됨
+      cb(null, Math.floor(Math.random() * 1000).toString() + Date.now() + '.' + file.originalname.split('.').pop());
+    }
+  }),
 });
-
-export const multerUpload = multer({
-  storage: fileStorage,
-  limits: {
-    fileSize: 20 * 1080 * 1080, // 20MB 로 제한
-  },
-});
-
-// export default multerUpload;
-
-// router.route('/')
-//     .get((req, res) => {
-//       res.sendFile(path.join(__dirname, "./uploads/1663155762972.jpg"));
-//       console.log(path.join(__dirname, "./uploads/1663155762972.jpg"));
-//     })
-//     .post(multerUpload.single('img'), (req, res) => {
-//         console.log(req.file);
-//         console.log(req.file.path);
-//         res.json(util.makeReply(reply, true, 200, "Image Upload Success"));
-//     });
-
-// module.exports = router;
