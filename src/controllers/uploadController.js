@@ -25,5 +25,11 @@ export async function myProfile(req, res) {
 }
 
 export async function test(req, res) {
+    const image_url = req.file.location;
     return res.json(util.makeReply(reply, true, 200, "Image Upload Success"));
+}
+
+export async function send(req, res) {
+    const testLocation = 'https://barva-dot.s3.ap-northeast-2.amazonaws.com/7721665045675137.png';
+    return res.json(util.dataReply(dataReply, true, 200, "Image import test", { location: testLocation }));
 }

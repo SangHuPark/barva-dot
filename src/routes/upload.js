@@ -11,4 +11,5 @@ export default async (app) => {
 
     route.get('/myProfile', jwt, uploadController.myProfile);
     route.post('/test', awsUpload.single('img'), uploadController.test);
+    route.get('/import', uploadController.send);
 }
