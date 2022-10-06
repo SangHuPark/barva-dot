@@ -5,21 +5,8 @@ import AWS from 'aws-sdk';
 
 const __dirname = path.resolve();
 const s3config = path.join(__dirname, "./src/config/awss3config.json");
-// app.use('/', express.static(path.join(__dirname, "./uploads/1663155762972.jpg")));
 
 AWS.config.loadFromPath(s3config);
-
-// var fileStorage = multer.diskStorage({
-//   // 저장 폴더 위치
-//   destination: (req, file, cb) => {
-//     cb(null, "upload/");
-//   },
-//   //파일이름
-//   filename: (req, file, cb) => {
-//     cb(null, new Date().valueOf() + '-' + file.originalname);
-//     // new Date().valueOf() + path.extname(file.originalname)
-//   },
-// });
 
 const s3 = new AWS.S3();
 
