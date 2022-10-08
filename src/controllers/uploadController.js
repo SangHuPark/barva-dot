@@ -33,3 +33,12 @@ export async function send(req, res) {
     const testLocation = 'https://barva-dot.s3.ap-northeast-2.amazonaws.com/7721665045675137.png';
     return res.json(util.dataReply(dataReply, true, 200, "Image import test", { location: testLocation }));
 }
+
+export async function array(req, res) {
+    const image = req.files;
+    const location = image.map(img => img.location);
+    console.log(location);
+    if ( image === undefined )
+        return res.json(util.makeReply(reply, false, 400, '이미지가 존재하지 않습니다.'));
+    return res.json(util.dataReply(reply, true, 200, "Image Array Upload Success", location));
+}
