@@ -1,7 +1,5 @@
 import crypto from "crypto";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../function/prismaFunc.js";
 
 const createSalt = () =>
     new Promise((resolve, reject) => {
@@ -21,11 +19,11 @@ export async function createHashedPassword(plainPassword) {
     });
 }
 
-export async function makePasswordHashed(userId, plainPassword) {
+export async function makePasswordHashed(user_id, plainPassword) {
     return new Promise(async (resolve, reject) => {
         const salt = await prisma.User.findMany({
                 where: {
-                    user_id: userId,
+                    user_id,
                 },
             });
 
