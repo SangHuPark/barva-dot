@@ -17,7 +17,7 @@ model User {
   user_email String @unique @db.VarChar(30)
   marketing Boolean
   user_introduce String? @default("") @db.VarChar(50)
-  user_profile String? @default("") @db.VarChar(50)
+  profile_url String? @default("") @db.VarChar(50)
   created_at DateTime @default(now())
 
   posts Post[]
@@ -32,7 +32,7 @@ model Post {
   post_content String @db.VarChar(500) 
   post_like Int? @default(0)
   color_extract String @db.VarChar(100)
-  image_url String @db.VarChar(200)
+  post_url String @db.VarChar(200)
   created_at DateTime @default(now())
 
   post_users User @relation(fields: [post_user], references: [id])
