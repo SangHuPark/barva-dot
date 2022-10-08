@@ -10,6 +10,7 @@ import * as util from "../function/replyFunc.js";
 var reply = {};
 var dataReply = {};
 
+// 사용자 프로필 불러오기
 export async function myProfile(req, res) {
     const user_id = req.decoded.user_id;
     
@@ -20,6 +21,38 @@ export async function myProfile(req, res) {
     } catch (err) {
         console.log(err);
         
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+// 프로필 사진 설정
+export async function setProfileImg(req, res) {
+    const user_id = req.decoded.user_id;
+    const profile_url = req.file.location;
+
+    try {
+        await homeService.insertProfileImg(user_id, profile_url);
+
+        return res.json(util.makeReply(reply, true, 200, '프로필 사진 설정이 완료되었습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response'), { err: err.message });
+    }
+}
+
+// 소개글 설정
+export async function setProfileIntro(req, res) {
+    const user_id = req.decoded.user_id;
+    const user_introduce = req.body.user_introduce;
+
+    try {
+        await homeService.insertProfileIntro(user_id, user_introduce);
+
+        return res.json(util.makeReply(reply, true, 200, '프로필 소개가 저장되었습니다.'));
+    } catch (err) {
+        console.log(err);
+
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
@@ -37,8 +70,9 @@ export async function send(req, res) {
 export async function array(req, res) {
     const image = req.files;
     const location = image.map(img => img.location);
-    console.log(location);
+    
     if ( image === undefined )
         return res.json(util.makeReply(reply, false, 400, '이미지가 존재하지 않습니다.'));
+
     return res.json(util.dataReply(reply, true, 200, "Image Array Upload Success", location));
 }
