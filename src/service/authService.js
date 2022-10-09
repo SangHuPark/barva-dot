@@ -1,4 +1,4 @@
-import { prisma } from "../function/prismaFunc.js";
+import { prisma } from "../function/prisma-client.js";
 
 export async function existIdCheck(user_id) {
     const existIdResult = await prisma.user.findUnique({ 
@@ -56,6 +56,7 @@ export async function insertUser(newUserInfo) {
             pw_salt,
             user_email,
             marketing: marketing,
+            created_at: new Date(),
         },
     })
     .then((result) => { // 회원 가입 성공 시

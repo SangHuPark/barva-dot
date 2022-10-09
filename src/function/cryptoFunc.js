@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { prisma } from "../function/prismaFunc.js";
+import { prisma } from "../function/prisma-client.js";
 
 const createSalt = () =>
     new Promise((resolve, reject) => {

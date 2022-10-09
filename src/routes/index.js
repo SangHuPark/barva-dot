@@ -1,13 +1,13 @@
 import { Router } from "express";
 
 import auth from "./auth.js";
-import home from "./home.js";
+import main from "./main.js";
 
 export default () => {
     const app = Router();
 
     auth(app);
-    home(app);
+    main(app);
 
     return app;
 }
