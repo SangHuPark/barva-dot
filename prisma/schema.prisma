@@ -34,7 +34,7 @@ model Post {
   color_extract String? @db.VarChar(100)
   post_url String @db.LongText
   user_gender String @db.VarChar(6)
-  user_tall Int
+  user_tall String
   
   created_at DateTime @default(now())
 
