@@ -77,13 +77,25 @@ export async function insertProfileIntro(user_id, user_introduce) {
 
 export async function upload(user_id, post_url, contents) {
     const { post_content, user_gender, user_tall } = contents;
+    const post_user = await prisma.user.findUnique({
+        where: {
+            user_id,
+        },
+        select: {
+            id: true,
+        }
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
     await prisma.post.create({
         data: {
             post_content,
             post_url,
             user_gender,
             user_tall,
-            post_user: user_id,
+            post_user,
         }
     })
     .catch((err) => {
