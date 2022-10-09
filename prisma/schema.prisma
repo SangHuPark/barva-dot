@@ -28,11 +28,14 @@ model User {
 }
 
 model Post {
-  id Int @id @default(autoincrement())
+  post_id Int @id @default(autoincrement())
   post_content String @db.VarChar(500) 
-  post_like Int? @default(0)
-  color_extract String @db.VarChar(100)
-  post_url String @db.VarChar(200)
+  likeCount Int? @default(0)
+  color_extract String? @db.VarChar(100)
+  post_url String @db.LongText
+  user_gender String @db.VarChar(6)
+  user_tall Int
+  
   created_at DateTime @default(now())
 
   post_users User @relation(fields: [post_user], references: [id])
@@ -43,14 +46,14 @@ model Post {
 }
 
 model Comment {
-  id Int @id @default(autoincrement())
+  comment_id Int @id @default(autoincrement())
   comment String @db.VarChar(200)
   created_at DateTime @default(now())
 
   commente_users User @relation(fields: [commenter], references: [id])
   commenter Int
 
-  comment_posts Post @relation(fields: [target_post], references: [id])
+  comment_posts Post @relation(fields: [target_post], references: [post_id])
   target_post Int
 }
 
@@ -58,7 +61,7 @@ model Save_post {
   saved_users User @relation(fields: [stored_user], references: [id])
   stored_user Int
   
-  saved_posts Post @relation(fields: [stored_post], references: [id])
+  saved_posts Post @relation(fields: [stored_post], references: [post_id])
   stored_post Int
 
   created_at DateTime @default(now())
