@@ -25,7 +25,7 @@ export async function signUp(req, res) {
     try {
         var formResult = await form.signUpForm(newUserInfo);
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", formResult ));
+            return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { formResult }));
 
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const insertUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing };
@@ -46,7 +46,7 @@ export async function isExistId(req, res) {
     try {
         var formResult = await form.idForm( { user_id } );
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 301, '아이디 형식이 올바르지 않습니다.', formResult ));
+            return res.json(util.dataReply(dataReply, false, 301, '아이디 형식이 올바르지 않습니다.', { formResult }));
 
         var signUpIdCheck = await authService.existIdCheck(user_id);
         if(signUpIdCheck) 
@@ -67,7 +67,7 @@ export async function isExistNick(req, res) {
     try {
         var formResult = await form.nickForm( { user_nick } );
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", formResult ));
+            return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", { formResult }));
 
         var signUpNickCheck = await authService.existNickCheck(user_nick);
         if(signUpNickCheck)
@@ -90,7 +90,7 @@ export async function sendMail(req, res) {
     try {
         var formResult = await form.emailForm( { user_email } );
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", formResult ));
+            return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { formResult }));
 
         var signUpMailCheck = await authService.existMailCheck(user_email);
         if(signUpMailCheck === true) 
@@ -139,7 +139,7 @@ export async function login(req, res) {
     try {
         var formResult = await form.loginForm(loginData);
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", formResult ));
+            return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { formResult }));
 
         var loginCheck = await authService.existIdCheck(loginData.user_id);
         if(!loginCheck)
@@ -197,7 +197,7 @@ export async function findId(req, res) {
     try {
         var formResult = await form.findIdForm(findIdData);
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 305, "이름 혹은 이메일 형식이 올바르지 않습니다.", formResult ));
+            return res.json(util.dataReply(dataReply, false, 305, "이름 혹은 이메일 형식이 올바르지 않습니다.", { formResult }));
 
         var findIdInfo = await authService.findUserId(findIdData);
         
@@ -241,7 +241,7 @@ export async function findPwMail(req, res) {
     try {
         const formResult = await form.emailForm( { user_email } );
         if(formResult !== true)
-            return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", formResult ));
+            return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { formResult }));
 
         var enrollMailCheck = await authService.existMailCheck(user_email);
         if(enrollMailCheck === true) {

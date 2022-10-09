@@ -12,7 +12,7 @@ export async function myProfile(req, res) {
     try {
         const myProfileInfo = await mainService.findUserProfile(user_id);
         
-        return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 프로필 정보입니다.', myProfileInfo));
+        return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 프로필 정보입니다.', { myProfileInfo }));
     } catch (err) {
         console.log(err);
         
@@ -27,7 +27,7 @@ export async function myFeed(req, res) {
     try {
         const myFeedInfo = await mainService.findUserFeed(user_id);
 
-        return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 피드 정보입니다.', myFeedInfo));
+        return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 피드 정보입니다.', { myFeedInfo }));
     } catch (err) {
         console.log(err);
         
