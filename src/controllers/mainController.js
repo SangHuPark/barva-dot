@@ -71,7 +71,7 @@ export async function uploadPost(req, res) {
     const user_id = req.decoded.user_id;
     const post_url = req.files.location;
     const contents = req.body;
-
+    
     try {
         await mainService.upload(user_id, post_url, contents);
 
