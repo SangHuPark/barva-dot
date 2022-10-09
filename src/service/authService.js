@@ -6,7 +6,7 @@ export async function existIdCheck(user_id) {
             user_id,
         }
     })
-    .catch(() => {
+    .catch((err) => {
         throw new Error(err);
     });
 
@@ -19,7 +19,7 @@ export async function existNickCheck(user_nick) {
             user_nick,
         },
     })
-    .catch(() => {
+    .catch((err) => {
         throw new Error(err);
     });
 
