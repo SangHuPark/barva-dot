@@ -69,16 +69,33 @@ export async function setProfileIntro(req, res) {
 
 export async function uploadPost(req, res) {
     const user_id = req.decoded.user_id;
-    const post_url = req.files.location;
     const contents = req.body;
     
+    const image = req.files;
+    const path = [];
+    for (let i = 0; i < image.length; i++) {
+        path[i] = image[i].location;
+    }   
+    const post_url = JSON.stringify(path);
+    
     try {
-        await mainService.upload(user_id, post_url, contents);
+        const uploadResult = await mainService.insertPost(user_id, post_url, contents);
+        if (!uploadResult)
+            return res.json(util.makeReply(reply, false, 400, '해당 사용자를 찾을 수 없습니다.'));
 
         return res.json(util.makeReply(reply, true, 200, '게시글 업로드가 완료되었습니다.'));
     } catch (err) {
         console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function loadingPost(req, res) {
+    const user_id = req.decoded.user_id;
+    const post_id = req.body.post_id;
+
+    try {
+        const loadingResult = await mainService.importPost(user_id, post_id);
     }
 }
