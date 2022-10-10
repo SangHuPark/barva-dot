@@ -13,5 +13,6 @@ export default async (app) => {
     route.get('/myFeed', mainController.myFeed);
     route.post('/setProfileImg', awsUpload.single('img'), mainController.setProfileImg);
     route.post('/setProfileIntro', mainController.setProfileIntro);
-    route.post('/upload', awsUpload.array('img'), mainController.uploadPost);
+    route.post('/uploadPost', awsUpload.array('img'), mainController.uploadPost);
+    route.post('/loadingPost', mainController.loadingPost);
 }
