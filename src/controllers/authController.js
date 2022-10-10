@@ -129,7 +129,6 @@ export async function authMail(req, res) {
 // 로그인
 export async function login(req, res) {
     const loginData = req.body;
-    const user_name = await authService.importUserName(loginData.user_id);
 
     if(!loginData.user_id)
         return res.json(util.makeReply(reply, false, 308, '아이디를 입력해주세요.'));
@@ -141,8 +140,9 @@ export async function login(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: formResult }));
 
+        const user_name = await authService.importUserName(loginData.user_id);
         var loginCheck = await authService.existIdCheck(loginData.user_id);
-        if(!loginCheck)
+        if(!loginCheck || user_name.length === 0)
             return res.json(util.makeReply(reply, false, 310, '등록되지 않은 회원정보입니다.')); 
 
         var checkPw = await cryptoFunc.makePasswordHashed(loginData.user_id, loginData.user_pw);

@@ -81,6 +81,9 @@ export async function importUserName(user_id) {
     .catch((err) => {
         throw new Error(err);
     });
+    
+    if(importNameResult.length === 0)
+        return importNameResult;
 
     return importNameResult[0].user_name;
 }
