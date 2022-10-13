@@ -104,9 +104,24 @@ export async function insertPost(user_id, post_url, contents) {
     })
     .catch((err) => {
         throw new Error(err);
-    })
+    });
 }
 
 export async function importPost(user_id, post_id) {
-    
+    await prisma.post.findMany({
+        where: {
+            post_id,
+            post_users: {
+                connect: {
+                    id: user_id,
+                }
+            },
+        },
+        orderBy: {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
 }
