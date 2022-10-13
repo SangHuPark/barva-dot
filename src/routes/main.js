@@ -15,4 +15,5 @@ export default async (app) => {
     route.post('/setProfileIntro', mainController.setProfileIntro);
     route.post('/uploadPost', awsUpload.array('img'), mainController.uploadPost);
     route.post('/loadingPost', mainController.loadingPost);
+
 }

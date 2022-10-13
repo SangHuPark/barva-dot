@@ -38,7 +38,9 @@ export async function myFeed(req, res) {
 // 프로필 사진 설정
 export async function setProfileImg(req, res, next) {
     const user_id = req.decoded.user_id;
+    console.log(req.file);
     const profile_url = req.file.location;
+    console.log(profile_url);
 
     try {
         await mainService.insertProfileImg(user_id, profile_url);
@@ -67,6 +69,7 @@ export async function setProfileIntro(req, res) {
     }
 }
 
+// 게시물 업로드
 export async function uploadPost(req, res) {
     const user_id = req.decoded.user_id;
     const contents = req.body;
@@ -91,11 +94,18 @@ export async function uploadPost(req, res) {
     }
 }
 
+// 단일 게시물 형식으로 불러오기
 export async function loadingPost(req, res) {
     const user_id = req.decoded.user_id;
     const post_id = req.body.post_id;
 
     try {
         const loadingResult = await mainService.importPost(user_id, post_id);
+
+        return res.json(util.makeReply(reply, true, 200, '단일 게시물 목록입니다.', { loadingResult }));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
