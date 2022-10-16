@@ -16,8 +16,9 @@ export const awsUpload = multer({
     s3: s3,
     bucket: 'barva-dot', // 객체를 업로드할 버킷 이름
     acl: 'public-read', // Access control for the file
-    key: function (req, file, cb) { // 객체의 키로 고유한 식별자 이기 때문에 겹치면 안됨
-      cb(null, Math.floor(Math.random() * 1000).toString() + Date.now() + '.' + file.originalname.split('.').pop());
-    }
+    key: (req, file, cb) => { // 객체의 키로 고유한 식별자 이기 때문에 겹치면 안됨
+      cb(null, req.decoded.user_id + '.' + Date.now() + '.' + file.originalname.split('.').pop());
+      // Math.floor(Math.random() * 1000).toString() + Date.now() + '.' + file.originalname.split('.').pop()
+    },
   }),
 });
