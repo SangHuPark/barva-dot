@@ -38,9 +38,7 @@ export async function myFeed(req, res) {
 // 프로필 사진 설정
 export async function setProfileImg(req, res, next) {
     const user_id = req.decoded.user_id;
-    console.log(req.file);
     const profile_url = req.file.location;
-    console.log(profile_url);
 
     try {
         await mainService.insertProfileImg(user_id, profile_url);
@@ -82,9 +80,7 @@ export async function uploadPost(req, res) {
     const post_url = JSON.stringify(path);
     
     try {
-        const uploadResult = await mainService.insertPost(user_id, post_url, contents);
-        if (!uploadResult)
-            return res.json(util.makeReply(reply, false, 400, '해당 사용자를 찾을 수 없습니다.'));
+        await mainService.insertPost(user_id, post_url, contents);
 
         return res.json(util.makeReply(reply, true, 200, '게시글 업로드가 완료되었습니다.'));
     } catch (err) {
