@@ -14,6 +14,6 @@ export default async (app) => {
     route.post('/setProfileImg', awsUpload.single('img'), mainController.setProfileImg);
     route.post('/setProfileIntro', mainController.setProfileIntro);
     route.post('/uploadPost', awsUpload.array('img'), mainController.uploadPost);
-    route.post('/userCheckerboard', mainController.userCheckerboard);
-    route.post('/userSingle', mainController.userSingle);
+    route.get('/userCheckerboard', mainController.userCheckerboard);
+    route.get('/userSingle', mainController.userSingle);
 }
