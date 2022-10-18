@@ -107,7 +107,7 @@ export async function insertPost(user_id, post_url, contents) {
     });
 }
 
-export async function importPost(user_id, post_id) {
+export async function importUserCheckerboard(user_id) {
     const findPostId = await prisma.user.findUnique({
         where : {
             user_id,
@@ -120,14 +120,12 @@ export async function importPost(user_id, post_id) {
         throw new Error(err);
     });
 
-    await prisma.post.findMany({
+    const loadingResult = await prisma.post.findMany({
         where: {
-            post_id,
-            post_users: {
-                connect: {
-                    id: findPostId.id,
-                }
-            },
+            post_user: findPostId.id,
+        },
+        select: {
+            post_url: true,
         },
         orderBy: {
             post_id: 'desc',
@@ -136,4 +134,43 @@ export async function importPost(user_id, post_id) {
     .catch((err) => {
         throw new Error(err);
     });
+
+    return loadingResult;
+}
+
+export async function importSingle(user_id) {
+    const findPostId = await prisma.user.findUnique({
+        where : {
+            user_id,
+        },
+        select : {
+            id: true,
+        }
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+    
+    const loadingResult = await prisma.post.findMany({
+        where : {
+            post_user: findPostId.id,
+        },
+        select : {
+            post_content: true,
+            likeCount: true,
+            user_gender: true,
+            user_tall: true,
+            created_at: true,
+            post_url: true,
+            //user_weight: true,
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return loadingResult;
 }
