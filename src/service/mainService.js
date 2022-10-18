@@ -108,12 +108,24 @@ export async function insertPost(user_id, post_url, contents) {
 }
 
 export async function importPost(user_id, post_id) {
+    const findPostId = await prisma.user.findUnique({
+        where : {
+            user_id,
+        },
+        select : {
+            id: true,
+        }
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
     await prisma.post.findMany({
         where: {
             post_id,
             post_users: {
                 connect: {
-                    id: user_id,
+                    id: findPostId.id,
                 }
             },
         },

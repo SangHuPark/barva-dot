@@ -90,8 +90,8 @@ export async function uploadPost(req, res) {
     }
 }
 
-// 단일 게시물 형식으로 불러오기
-export async function loadingPost(req, res) {
+// 바둑판 형식으로 사용자 게시물 불러오기
+export async function userCheckerboard(req, res) {
     const user_id = req.decoded.user_id;
     const post_id = req.body.post_id;
 
@@ -105,3 +105,8 @@ export async function loadingPost(req, res) {
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
+
+// 단일 형식으로 사용자 게시물 불러오기
+/**export async function userSingle(req, res) {
+    const 
+}*/
