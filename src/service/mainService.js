@@ -76,7 +76,7 @@ export async function insertProfileIntro(user_id, user_introduce) {
 }
 
 export async function insertPost(user_id, post_url, contents) {
-    const { post_content, user_gender, user_tall } = contents;
+    const { post_content, user_gender, user_tall, user_weight } = contents;
     const user = await prisma.user.findUnique({
         where: {
             user_id,
@@ -95,12 +95,12 @@ export async function insertPost(user_id, post_url, contents) {
             post_url,
             user_gender,
             user_tall,
+            user_weight,
             post_users: { 
                 connect: {
                     id: user.id,
                 }
             },
-            user_weight,
         }
     })
     .catch((err) => {
