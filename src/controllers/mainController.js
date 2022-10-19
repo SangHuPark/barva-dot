@@ -123,8 +123,6 @@ export async function userSingle(req, res) {
         for (let i = 0; i < singleResult.length; i++)
             singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
 
-        console.log(singleResult);
-
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
     } catch (err) {
         console.log(err);
