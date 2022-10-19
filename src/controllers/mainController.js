@@ -96,13 +96,14 @@ export async function userCheckerboard(req, res) {
 
     try {
         const checkerboardResult = await mainService.importUserCheckerboard(user_id);
+        
         const emptyArr = [];
         for (let i = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[0].post_url);
-
+            emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
+        
         const checkerboardArr = [];
         for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[0][i];
+            checkerboardArr[i] = emptyArr[i][0];
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 사용자 피드입니다.', { checkerboardArr }));
     } catch (err) {
