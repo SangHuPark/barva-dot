@@ -100,6 +100,7 @@ export async function insertPost(user_id, post_url, contents) {
                     id: user.id,
                 }
             },
+            user_weight,
         }
     })
     .catch((err) => {
