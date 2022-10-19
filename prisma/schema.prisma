@@ -30,11 +30,12 @@ model User {
 model Post {
   post_id Int @id @default(autoincrement())
   post_content String @db.VarChar(500) 
-  likeCount Int? @default(0)
-  color_extract String? @db.VarChar(100)
+  likeCount Int @default(0)
+  color_extract String @db.VarChar(100) @default("")
   post_url String @db.VarChar(2000)
   user_gender String @db.VarChar(6)
-  user_tall String
+  user_tall String @db.VarChar(4)
+  user_weight String @db.VarChar(4)
   created_at DateTime @default(now())
 
   post_users User @relation(fields: [post_user], references: [id])
