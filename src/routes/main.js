@@ -10,7 +10,6 @@ export default async (app) => {
     app.use('/main', jwt, route);
 
     route.get('/myProfile', mainController.myProfile);
-    route.get('/myFeed', mainController.myFeed);
     route.post('/setProfileImg', awsUpload.single('img'), mainController.setProfileImg);
     route.post('/setProfileIntro', mainController.setProfileIntro);
     route.post('/uploadPost', awsUpload.array('img'), mainController.uploadPost);
