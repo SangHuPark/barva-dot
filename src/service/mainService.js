@@ -18,35 +18,6 @@ export async function findUserProfile(user_id) {
     return profileResult;
 }
 
-export async function findUserFeed(user_id) {
-    const findPostId = await prisma.user.findUnique({
-        where : {
-            user_id,
-        },
-        select : {
-            id: true,
-        }
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
-    const findPostResult = await prisma.post.findMany({
-        where : {
-            post_user: findPostId.id,
-        },
-        select : {
-            created_at: true,
-            post_url: true,
-        },
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
-    return findPostResult;
-}
-
 export async function insertProfileImg(user_id, profile_url) {
     await prisma.user.update({
         where: {
@@ -139,7 +110,7 @@ export async function importUserCheckerboard(user_id) {
     return loadingResult;
 }
 
-export async function importSingle(user_id) {
+export async function importUserSingle(user_id) {
     const findPostId = await prisma.user.findUnique({
         where : {
             user_id,
@@ -161,9 +132,105 @@ export async function importSingle(user_id) {
             likeCount: true,
             user_gender: true,
             user_tall: true,
+            user_weight: true,
             created_at: true,
             post_url: true,
-            //user_weight: true,
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return loadingResult;
+}
+
+export async function importNewestCheckerboard() {
+    const loadingResult = await prisma.post.findMany({
+        select : {
+            post_url: true,
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return loadingResult;
+}
+
+export async function importNewestSingle() {
+    const loadingResult = await prisma.post.findMany({
+        select : {
+            post_content: true,
+            likeCount: true,
+            user_gender: true,
+            user_tall: true,
+            user_weight: true,
+            created_at: true,
+            post_url: true,
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return loadingResult;
+}
+
+/** 오늘의 색상 관련 API
+export async function importColorCheckerboard() {
+    const loadingResult = await prisma.post.findMany({
+        select : {
+            post_url: true,
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return loadingResult;
+}
+
+export async function importColorSingle() {
+    const loadingResult = await prisma.post.findMany({
+        select : {
+            post_content: true,
+            likeCount: true,
+            user_gender: true,
+            user_tall: true,
+            user_weight: true,
+            created_at: true,
+            post_url: true,
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return loadingResult;
+} */
+
+export async function importGenderCheckerboard(user_gender) {
+    const loadingResult = await prisma.post.findMany({
+        where : {
+            user_gender,
+        },
+        select : {
+            post_url: true,
         },
         orderBy : {
             post_id: 'desc',
