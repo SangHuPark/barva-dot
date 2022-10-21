@@ -103,10 +103,15 @@ export async function userSingle(req, res) {
     const user_id = req.decoded.user_id;
 
     try {
-        const singleResult = await mainService.importUserSingle(user_id);
+        const { findPostUser, singleResult } = await mainService.importUserSingle(user_id);
         
-        for (let i = 0; i < singleResult.length; i++)
+        for (let i = 0; i < singleResult.length; i++) {
             singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
+            singleResult[i].profile_url = findPostUser.profile_url;
+            singleResult[i].user_nick = findPostUser.user_nick;
+        }
+        
+        // singleResult.findPostId = singleResult.findPostId.user_nick;
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
     } catch (err) {
@@ -210,5 +215,18 @@ export async function genderCheckerboard(req, res) {
 }
 
 export async function genderSingle(req, res) {
-    
+    const user_gender = req.body.user_gender;
+
+    try {
+        const singleResult = await mainService.importGenderSingle(user_gender);
+        
+        for (let i = 0; i < singleResult.length; i++)
+            singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
+
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
 }

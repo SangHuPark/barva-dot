@@ -111,11 +111,13 @@ export async function importUserCheckerboard(user_id) {
 }
 
 export async function importUserSingle(user_id) {
-    const findPostId = await prisma.user.findUnique({
+    const findPostUser = await prisma.user.findUnique({
         where : {
             user_id,
         },
         select : {
+            user_nick: true,
+            profile_url: true,
             id: true,
         }
     })
@@ -123,9 +125,9 @@ export async function importUserSingle(user_id) {
         throw new Error(err);
     });
     
-    const loadingResult = await prisma.post.findMany({
+    const singleResult = await prisma.post.findMany({
         where : {
-            post_user: findPostId.id,
+            post_user: findPostUser.id,
         },
         select : {
             post_content: true,
@@ -144,7 +146,7 @@ export async function importUserSingle(user_id) {
         throw new Error(err);
     });
 
-    return loadingResult;
+    return { findPostUser, singleResult };
 }
 
 export async function importNewestCheckerboard() {
@@ -165,6 +167,9 @@ export async function importNewestCheckerboard() {
 
 export async function importNewestSingle() {
     const loadingResult = await prisma.post.findMany({
+        where : {
+            user
+        },
         select : {
             post_content: true,
             likeCount: true,
@@ -241,4 +246,8 @@ export async function importGenderCheckerboard(user_gender) {
     });
 
     return loadingResult;
+}
+
+export async function importGenderSingle(user_gender) {
+
 }
