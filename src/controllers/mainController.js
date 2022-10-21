@@ -54,7 +54,7 @@ export async function setProfileIntro(req, res) {
 
 // 게시물 업로드
 export async function uploadPost(req, res) {
-    const user_id = req.decoded.user_id;
+    const id = req.decoded.id;
     const contents = req.body;
     
     const image = req.files;
@@ -65,7 +65,7 @@ export async function uploadPost(req, res) {
     const post_url = JSON.stringify(path);
     
     try {
-        await mainService.insertPost(user_id, post_url, contents);
+        await mainService.insertPost(id, post_url, contents);
 
         return res.json(util.makeReply(reply, true, 200, '게시글 업로드가 완료되었습니다.'));
     } catch (err) {
@@ -77,10 +77,10 @@ export async function uploadPost(req, res) {
 
 // 바둑판 형식으로 사용자 게시물 불러오기
 export async function userCheckerboard(req, res) {
-    const user_id = req.decoded.user_id;
+    const id = req.decoded.id;
 
     try {
-        const checkerboardResult = await mainService.importUserCheckerboard(user_id);
+        const checkerboardResult = await mainService.importUserCheckerboard(id);
         
         const emptyArr = [];
         for (let i = 0; i < checkerboardResult.length; i++)
@@ -100,19 +100,14 @@ export async function userCheckerboard(req, res) {
 
 // 단일 형식으로 사용자 게시물 불러오기
 export async function userSingle(req, res) {
-    const user_id = req.decoded.user_id;
+    const id = req.decoded.id;
 
     try {
-        const { findPostUser, singleResult } = await mainService.importUserSingle(user_id);
+        const singleResult = await mainService.importUserSingle(id);
         
-        for (let i = 0; i < singleResult.length; i++) {
+        for (let i = 0; i < singleResult.length; i++)
             singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
-            singleResult[i].profile_url = findPostUser.profile_url;
-            singleResult[i].user_nick = findPostUser.user_nick;
-        }
         
-        // singleResult.findPostId = singleResult.findPostId.user_nick;
-
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
     } catch (err) {
         console.log(err);

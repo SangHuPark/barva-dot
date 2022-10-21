@@ -15,4 +15,8 @@ export default async (app) => {
     route.post('/uploadPost', awsUpload.array('img'), mainController.uploadPost);
     route.get('/userCheckerboard', mainController.userCheckerboard);
     route.get('/userSingle', mainController.userSingle);
+    route.get('/newestCheckerboard', mainController.newestCheckerboard);
+    route.get('/newestSingle', mainController.newestSingle);
+    route.post('/genderCheckerboard', mainController.genderCheckerboard);
+    route.post('/genderSingle', mainController.genderSingle);
 }

@@ -110,7 +110,7 @@ export async function importUserCheckerboard(user_id) {
     return loadingResult;
 }
 
-export async function importUserSingle(user_id) {
+export async function importUserSingle(id) {
     const findPostUser = await prisma.user.findUnique({
         where : {
             user_id,
@@ -127,7 +127,7 @@ export async function importUserSingle(user_id) {
     
     const singleResult = await prisma.post.findMany({
         where : {
-            post_user: findPostUser.id,
+            post_user: id,
         },
         select : {
             post_content: true,
@@ -137,6 +137,12 @@ export async function importUserSingle(user_id) {
             user_weight: true,
             created_at: true,
             post_url: true,
+            post_users: {
+                select: {
+                    user_nick: true,
+                    profile_url: true,
+                },
+            },
         },
         orderBy : {
             post_id: 'desc',
@@ -146,7 +152,7 @@ export async function importUserSingle(user_id) {
         throw new Error(err);
     });
 
-    return { findPostUser, singleResult };
+    return singleResult;
 }
 
 export async function importNewestCheckerboard() {
@@ -167,9 +173,6 @@ export async function importNewestCheckerboard() {
 
 export async function importNewestSingle() {
     const loadingResult = await prisma.post.findMany({
-        where : {
-            user
-        },
         select : {
             post_content: true,
             likeCount: true,
@@ -178,6 +181,12 @@ export async function importNewestSingle() {
             user_weight: true,
             created_at: true,
             post_url: true,
+            post_users: {
+                select : {
+                    user_nick: true,
+                    profile_url: true,
+                },
+            },
         },
         orderBy : {
             post_id: 'desc',
@@ -249,5 +258,32 @@ export async function importGenderCheckerboard(user_gender) {
 }
 
 export async function importGenderSingle(user_gender) {
+    const loadingResult = await prisma.post.findMany({
+        where : {
+            user_gender,
+        },
+        select : {
+            post_content: true,
+            likeCount: true,
+            user_gender: true,
+            user_tall: true,
+            user_weight: true,
+            created_at: true,
+            post_url: true,
+            post_users: {
+                select : {
+                    user_nick: true,
+                    profile_url: true,
+                },
+            },
+        },
+        orderBy : {
+            post_id: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
 
+    return loadingResult;
 }
