@@ -70,28 +70,25 @@ export async function insertUser(newUserInfo) {
 }
 
 export async function importUserName(user_id) {
-    const importNameResult = await prisma.user.findMany({
+    const importNameResult = await prisma.user.findUnique({
         where: {
             user_id,
         },
         select: {
             user_name: true,
+            id: true,
         },
     })
     .catch((err) => {
         throw new Error(err);
     });
     
-    if(importNameResult.length === 0)
-        return importNameResult;
-
-    return importNameResult[0].user_name;
+    return importNameResult;
 }
 
 export async function findUserId(findIdData) {
-    const findIdResult = await prisma.user.findMany({
+    const findIdResult = await prisma.user.findUnique({
         where: {
-            user_name: findIdData.user_name,
             user_email: findIdData.user_email,
         },
         select: {
