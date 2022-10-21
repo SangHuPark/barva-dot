@@ -140,9 +140,9 @@ export async function login(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: formResult }));
 
-        const user_name = await authService.importUserName(loginData.user_id);
+        const userInfo = await authService.importUserName(loginData.user_id);
         var loginCheck = await authService.existIdCheck(loginData.user_id);
-        if(!loginCheck || user_name.length === 0)
+        if(!loginCheck || userInfo.length === 0)
             return res.json(util.makeReply(reply, false, 310, '등록되지 않은 회원정보입니다.')); 
 
         var checkPw = await cryptoFunc.makePasswordHashed(loginData.user_id, loginData.user_pw);
@@ -152,10 +152,11 @@ export async function login(req, res) {
         const token = jwt.sign({
             type: 'JWT',
             user_id: loginData.user_id,
-            user_name: user_name
+            user_name: userInfo.user_name,
+            id: userInfo.id,
           }, JWT_SECRET_KEY, {
             expiresIn: '100y',
-            issuer: user_name,
+            issuer: userInfo.user_name,
           });
 
         return res.json(util.dataReply(dataReply, true, 200, '로그인 성공, 토큰이 발급되었습니다.', { token }));
@@ -204,7 +205,7 @@ export async function findId(req, res) {
         if(findIdInfo.length === 0)
             return res.json(util.makeReply(reply, false, 314, '해당 이름 혹은 이메일로 가입된 회원정보가 없습니다.'));
 
-        return res.json(util.makeReply(reply, true, 200, `회원님의 아이디는 < ${findIdInfo[0].user_id} > 입니다.`));
+        return res.json(util.makeReply(reply, true, 200, `회원님의 아이디는 < ${findIdInfo.user_id} > 입니다.`));
     } catch (err) {
         console.log(err);
 
