@@ -46,19 +46,8 @@ export async function insertProfileIntro(user_id, user_introduce) {
     });
 }
 
-export async function insertPost(user_id, post_url, contents) {
+export async function insertPost(id, post_url, contents) {
     const { post_content, user_gender, user_tall, user_weight } = contents;
-    const user = await prisma.user.findUnique({
-        where: {
-            user_id,
-        },
-        select: {
-            id: true,
-        }
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
 
     await prisma.post.create({
         data: {
@@ -69,7 +58,7 @@ export async function insertPost(user_id, post_url, contents) {
             user_weight,
             post_users: { 
                 connect: {
-                    id: user.id,
+                    id,
                 }
             },
         }
@@ -79,22 +68,10 @@ export async function insertPost(user_id, post_url, contents) {
     });
 }
 
-export async function importUserCheckerboard(user_id) {
-    const findPostId = await prisma.user.findUnique({
-        where : {
-            user_id,
-        },
-        select : {
-            id: true,
-        }
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
+export async function importUserCheckerboard(id) {
     const loadingResult = await prisma.post.findMany({
         where: {
-            post_user: findPostId.id,
+            post_user: id,
         },
         select: {
             post_url: true,
@@ -111,20 +88,6 @@ export async function importUserCheckerboard(user_id) {
 }
 
 export async function importUserSingle(id) {
-    const findPostUser = await prisma.user.findUnique({
-        where : {
-            user_id,
-        },
-        select : {
-            user_nick: true,
-            profile_url: true,
-            id: true,
-        }
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-    
     const singleResult = await prisma.post.findMany({
         where : {
             post_user: id,
