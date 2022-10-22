@@ -4,7 +4,7 @@ import nodeCache from "node-cache";
 
 dotenv.config();
 
-import * as authService from "../service/authService.js";
+import * as authModel from "../model/authModel.js";
 import * as cryptoFunc from "../function/cryptoFunc.js";
 import * as util from "../function/replyFunc.js";
 import * as mail from "../function/node-mailer.js";
@@ -29,7 +29,7 @@ export async function signUp(req, res) {
 
         const { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_pw);
         const insertUserInfo = { user_name, user_nick, user_id, hashed_pw, pw_salt, user_email, marketing };
-        await authService.insertUser(insertUserInfo);
+        await authModel.insertUser(insertUserInfo);
 
         return res.json(util.makeReply(reply, true, 200, '회원가입을 성공하였습니다.'));
     } catch (err) {
@@ -48,7 +48,7 @@ export async function isExistId(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 301, '아이디 형식이 올바르지 않습니다.', { err: formResult }));
 
-        var signUpIdCheck = await authService.existIdCheck(user_id);
+        var signUpIdCheck = await authModel.existIdCheck(user_id);
         if(signUpIdCheck) 
             return res.json(util.makeReply(reply, false, 302, '이미 사용 중인 아이디입니다.')); 
         else
@@ -69,7 +69,7 @@ export async function isExistNick(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 303, "닉네임 형식이 올바르지 않습니다.", { err: formResult }));
 
-        var signUpNickCheck = await authService.existNickCheck(user_nick);
+        var signUpNickCheck = await authModel.existNickCheck(user_nick);
         if(signUpNickCheck)
             return res.json(util.makeReply(reply, false, 304, '이미 사용 중인 닉네임입니다.'));
         else
@@ -92,7 +92,7 @@ export async function sendMail(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
-        var signUpMailCheck = await authService.existMailCheck(user_email);
+        var signUpMailCheck = await authModel.existMailCheck(user_email);
         if(signUpMailCheck === true) 
             return res.json(util.makeReply(reply, false, 306, '이미 가입된 메일 정보입니다.'));
         
@@ -140,8 +140,8 @@ export async function login(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 300, "요청한 데이터 형식이 올바르지 않습니다.", { err: formResult }));
 
-        const userInfo = await authService.importUserName(loginData.user_id);
-        var loginCheck = await authService.existIdCheck(loginData.user_id);
+        const userInfo = await authModel.importUserName(loginData.user_id);
+        var loginCheck = await authModel.existIdCheck(loginData.user_id);
         if(!loginCheck || userInfo.length === 0)
             return res.json(util.makeReply(reply, false, 310, '등록되지 않은 회원정보입니다.')); 
 
@@ -173,7 +173,7 @@ export async function resign(req, res) {
     const user_id = req.decoded.user_id;
 
     try {
-        var resignCheck = await authService.existIdCheck(user_id);
+        var resignCheck = await authModel.existIdCheck(user_id);
         if(!resignCheck)
             return res.json(util.makeReply(reply, false, 312, '이미 탈퇴한 회원 정보입니다.'));
 
@@ -181,7 +181,7 @@ export async function resign(req, res) {
         if(checkPw !== resignCheck.user_pw)
             return res.json(util.makeReply(reply, false, 311, '아이디 또는 비밀번호를 확인하세요.'));
 
-        await authService.deleteUser(user_id);
+        await authModel.deleteUser(user_id);
 
         return res.json(util.makeReply(reply, true, 200, '탈퇴되었습니다.'));
     } catch (err) {
@@ -200,7 +200,7 @@ export async function findId(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이름 혹은 이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
-        var findIdInfo = await authService.findUserId(findIdData);
+        var findIdInfo = await authModel.findUserId(findIdData);
         
         if(findIdInfo.length === 0)
             return res.json(util.makeReply(reply, false, 314, '해당 이름 혹은 이메일로 가입된 회원정보가 없습니다.'));
@@ -221,7 +221,7 @@ export async function findPw(req, res) {
         return res.json(util.makeReply(reply, false, 308, '아이디를 입력해주세요.'));
 
     try {
-        var loginCheck = await authService.existIdCheck(user_id);
+        var loginCheck = await authModel.existIdCheck(user_id);
         if(!loginCheck)
             return res.json(util.makeReply(reply, false, 310, '등록되지 않은 회원정보입니다.')); 
 
@@ -244,7 +244,7 @@ export async function findPwMail(req, res) {
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
-        var enrollMailCheck = await authService.existMailCheck(user_email);
+        var enrollMailCheck = await authModel.existMailCheck(user_email);
         if(enrollMailCheck === true) {
             const authNumber = await cryptoFunc.makeAuthNumber();
             await mail.makeMail(authNumber, user_email);
@@ -271,7 +271,7 @@ export async function updatePw(req, res) {
     try {
         var { hashed_pw, pw_salt } = await cryptoFunc.createHashedPassword(user_updatePw);
         var updateUserInfo = { user_id, hashed_pw, pw_salt };
-        await authService.updateUserPw(updateUserInfo);
+        await authModel.updateUserPw(updateUserInfo);
 
         return res.json(util.makeReply(reply, true, 200, '비밀번호가 재설정 되었습니다.'));
     } catch (err) {
