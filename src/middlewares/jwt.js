@@ -8,9 +8,7 @@ export default async (req, res, next) => {
     return next();
   } catch (err) {
     var reply = {};
-
-    console.log(err.message);
-
+    
     if (err.name === 'TokenExpiredError') {
       return res.json(util.makeReply(reply, false, 419, '토큰이 만료되었습니다'));
     }
