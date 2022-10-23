@@ -51,9 +51,28 @@ export async function importNewestSingle() {
     return loadingResult;
 }
 
-/** 오늘의 색상 관련 API
-export async function importColorCheckerboard() {
+// 오늘의 색상 관련 API
+export async function importTodayColor() {
+    const todayColor = await prisma.post.findMany({
+        select : {
+            color_extract: true,
+        },
+        orderBy : {
+            likeCount: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return todayColor[0];
+}
+
+export async function importColorCheckerboard(todayColor) {
     const loadingResult = await prisma.post.findMany({
+        where : {
+            color_extract: todayColor,
+        },
         select : {
             post_url: true,
         },
@@ -68,8 +87,11 @@ export async function importColorCheckerboard() {
     return loadingResult;
 }
 
-export async function importColorSingle() {
+export async function importColorSingle(todayColor) {
     const loadingResult = await prisma.post.findMany({
+        where : {
+            color_extract: todayColor,
+        },
         select : {
             post_content: true,
             likeCount: true,
@@ -88,7 +110,7 @@ export async function importColorSingle() {
     });
 
     return loadingResult;
-} */
+}
 
 export async function importGenderCheckerboard(user_gender) {
     const loadingResult = await prisma.post.findMany({

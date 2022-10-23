@@ -25,8 +25,6 @@ export async function newestCheckerboard(req, res) {
 }
 
 export async function newestSingle(req, res) {
-    const id = req.decoded.id;
-
     try {
         const singleResult = await sortModel.importNewestSingle();
         
@@ -51,13 +49,15 @@ export async function newestSingle(req, res) {
     }
 }
 
-/** 오늘의 색상 관련 API
+// 오늘의 색상 관련 API
 export async function colorCheckerboard(req, res) {
     try {
-        const checkerboardResult = await mainService.importColorCheckerboard();
+        const todayColor = await sortModel.importTodayColor();
+
+        const checkerboardResult = await sortModel.importColorCheckerboard(todayColor);
 
         const emptyArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
+        for (leti = 0; i < checkerboardResult.length; i++)
             emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
         
         const checkerboardArr = [];
@@ -74,10 +74,22 @@ export async function colorCheckerboard(req, res) {
 
 export async function colorSingle(req, res) {
     try {
-        const singleResult = await mainService.importNewestSingle();
+        const todayColor = await sortModel.importTodayColor();
+
+        const singleResult = await sortModel.importNewestSingle(todayColor);
         
-        for (let i = 0; i < singleResult.length; i++)
+        for (let i = 0; i < singleResult.length; i++) {
             singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
+        
+            if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
+                if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
+                    singleResult[i].isSave = true;
+            }
+            else
+                singleResult[i].isSave = false;
+
+            delete singleResult[i].save_posts;
+        }
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
     } catch (err) {
@@ -85,7 +97,7 @@ export async function colorSingle(req, res) {
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
-} */
+}
 
 export async function genderCheckerboard(req, res) {
     const user_gender = req.body.user_gender;
