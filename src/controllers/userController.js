@@ -91,3 +91,18 @@ export async function savePost(req, res) {
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
+
+export async function addfollowing(req, res) {
+    const id = req.decoded.id;
+    const user_nick = req.body.user_nick;
+
+    try {
+        await userModel.insertFollowing(id, user_nick);
+
+        return res.json(util.makeReply(reply, true, 200, '해당 사용자를 팔로우하였습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}

@@ -93,3 +93,27 @@ export async function insertSavePost(id, post_id) {
         throw new Error(err);
     });
 }
+
+export async function insertFollowing(id, user_nick) {
+    const findPostUser = await prisma.user.findUnique({
+        where: {
+            user_nick,
+        },
+        select: {
+            id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    await prisma.follow.create({
+        data: {
+            follower_id: id,
+            following_id: findPostUser,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+}
