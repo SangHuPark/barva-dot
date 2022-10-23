@@ -6,7 +6,7 @@ var dataReply = {};
 
 export async function newestCheckerboard(req, res) {
     try {
-        const checkerboardResult = await sortModel.importNewestCheckerboard(id);
+        const checkerboardResult = await sortModel.importNewestCheckerboard();
 
         const emptyArr = [];
         for (let i = 0; i < checkerboardResult.length; i++)
@@ -28,7 +28,7 @@ export async function newestSingle(req, res) {
     const id = req.decoded.id;
 
     try {
-        const singleResult = await sortModel.importNewestSingle(id);
+        const singleResult = await sortModel.importNewestSingle();
         
         for (let i = 0; i < singleResult.length; i++) {
             singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
