@@ -58,3 +58,13 @@ export async function commentPost(req, res) {
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
+
+/*
+export async function likePost(req, res) {
+    const post_id = req.body.post_id;
+
+    try {
+        await uplo
+    }
+} */
+

@@ -48,3 +48,6 @@ export async function insertComment(id, comment, post_id) {
         throw new Error(err);
     })
 }
+
+/*
+export async function likePost() */
