@@ -92,7 +92,22 @@ export async function savePost(req, res) {
     }
 }
 
-export async function addfollowing(req, res) {
+export async function cancelSavePost(req, res) {
+    const id = req.decoded.id;
+    const post_id = req.body.post_id;
+
+    try {
+        await userModel.deleteSavePost(id, post_id);
+
+        return res.json(util.makeReply(reply, true, 200, '게시글 저장을 취소하였습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function addFollowing(req, res) {
     const id = req.decoded.id;
     const user_nick = req.body.user_nick;
 
@@ -104,5 +119,14 @@ export async function addfollowing(req, res) {
         console.log(err);
 
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function cancelFollowing(req, res) {
+    const id = req.decoded.id;
+    const user_nick = req.body.user_nick;
+
+    try {
+        await user
     }
 }

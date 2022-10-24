@@ -96,8 +96,20 @@ export async function insertSavePost(id, post_id) {
     });
 }
 
+export async function deleteSavePost(id, post_id) {
+    await prisma.save_post.delete({
+        where: {
+            stored_user: id,
+            stored_post: post_id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+}
+
 export async function insertFollowing(id, user_nick) {
-    const findPostUser = await prisma.user.findUnique({
+    const findFollowUser = await prisma.user.findUnique({
         where: {
             user_nick,
         },
@@ -110,6 +122,30 @@ export async function insertFollowing(id, user_nick) {
     });
 
     await prisma.follow.create({
+        data: {
+            follower_id: id,
+            following_id: findPostUser,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+}
+
+export async function deleteFollowing(id, user_nick) {
+    const findFollowUser = await prisma.user.findUnique({
+        where: {
+            user_nick,
+        },
+        select: {
+            id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    await prisma.follow.delete({
         data: {
             follower_id: id,
             following_id: findPostUser,
