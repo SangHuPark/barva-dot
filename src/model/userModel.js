@@ -6,6 +6,7 @@ export async function findUserProfile(user_id) {
             user_id,
         },
         select : {
+            user_name: true,
             user_nick: true,
             profile_url: true,
             user_introduce: true,
@@ -57,6 +58,7 @@ export async function importUserSingle(id) {
             post_user: id,
         },
         select : {
+            post_id: true,
             post_content: true,
             likeCount: true,
             user_gender: true,
