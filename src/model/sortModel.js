@@ -168,3 +168,55 @@ export async function importGenderSingle(user_gender) {
 
     return loadingResult;
 }
+
+export async function findOtherProfile(user_nick) {
+    const profileResult = await prisma.user.findUnique({
+        where : {
+            user_nick,
+        },
+        select : {
+            id: true,
+            user_name: true,
+            user_nick: true,
+            profile_url: true,
+            user_introduce: true,
+        }
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const countPost = await prisma.post.count({
+        where: {
+            post_user: profileResult.id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const countFollower = await prisma.follow.count({
+        where: {
+            following_id: profileResult.id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const countFollowing = await prisma.follow.count({
+        where: {
+            follower_id: profileResult.id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    profileResult.countPost = countPost;
+    profileResult.countFollower = countFollower;
+    profileResult.countFollowing = countFollowing;
+    delete profileResult.id;
+
+    return profileResult;
+}

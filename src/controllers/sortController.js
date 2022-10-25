@@ -150,3 +150,17 @@ export async function genderSingle(req, res) {
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
+
+export async function otherProfile(req, res) {
+    const user_nick = req.body.user_nick;
+
+    try {
+        const otherProfileInfo = await sortModel.findOtherProfile(user_nick);
+
+        return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 프로필 정보입니다.', { otherProfileInfo }));
+    } catch (err) {
+        console.log(err);
+        
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
