@@ -16,4 +16,6 @@ export default async (app) => {
     route.post('/cancelSavePost', userController.cancelSavePost);
     route.post('/addFollowing', userController.addFollowing);
     route.post('/cancelFollowing', userController.cancelFollowing);
+    route.get('/savePostCheckerboard', userController.savePostCheckerboard);
+    route.get('/savePostSingle', userController.savePostSingle);
 }

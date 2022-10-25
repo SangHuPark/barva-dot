@@ -7,10 +7,10 @@ var dataReply = {};
 
 // 마이프로필 불러오기
 export async function myProfile(req, res) {
-    const user_id = req.decoded.user_id;
+    const id = req.decoded.id;
     
     try {
-        const myProfileInfo = await userModel.findUserProfile(user_id);
+        const myProfileInfo = await userModel.findUserProfile(id);
         
         return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 프로필 정보입니다.', { myProfileInfo }));
     } catch (err) {
@@ -100,6 +100,48 @@ export async function cancelSavePost(req, res) {
         await userModel.deleteSavePost(id, post_id);
 
         return res.json(util.makeReply(reply, true, 200, '게시글 저장을 취소하였습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function savePostCheckerboard(req, res) {
+    const id = req.decoded.id;
+
+    try {
+        const checkerboardResult = await userModel.importSavePostCheckerboard(id);
+
+        const emptyArr = [];
+        for (let i = 0; i < checkerboardResult.length; i++)
+            emptyArr[i] = JSON.parse(checkerboardResult[i].saved_posts.post_url);
+        
+        const checkerboardArr = [];
+        for (let i = 0; i < checkerboardResult.length; i++)
+            checkerboardArr[i] = emptyArr[i][0];
+
+        return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 저장된 게시물입니다.', { checkerboardArr }));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function savePostSingle(req, res) {
+    const id = req.decoded.id;
+
+    try {
+        const singleResult = await userModel.importSavePostSingle(id);
+        console.log(singleResult);
+
+        for (let i = 0; i < singleResult.length; i++) {
+            singleResult[i].saved_posts.post_url = JSON.parse(singleResult[i].saved_posts.post_url);
+            singleResult[i].isSave = true;
+        }
+
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 저장된 게시물입니다.', { singleResult }));
     } catch (err) {
         console.log(err);
 
