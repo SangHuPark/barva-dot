@@ -97,7 +97,7 @@ export async function cancelSavePost(req, res) {
     const post_id = req.body.post_id;
 
     try {
-        await userModel.deleteSavePost(id, post_id);
+        await userModel.deleteSavePost(id, parseInt(post_id));
 
         return res.json(util.makeReply(reply, true, 200, '게시글 저장을 취소하였습니다.'));
     } catch (err) {
@@ -127,6 +127,12 @@ export async function cancelFollowing(req, res) {
     const user_nick = req.body.user_nick;
 
     try {
-        await user
+        await userModel.deleteFollowing(id, user_nick);
+
+        return res.json(util.makeReply(reply, true, 200, '해당 사용자를 팔로우 취소하였습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }

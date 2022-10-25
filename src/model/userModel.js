@@ -99,9 +99,12 @@ export async function insertSavePost(id, post_id) {
 export async function deleteSavePost(id, post_id) {
     await prisma.save_post.delete({
         where: {
-            stored_user: id,
-            stored_post: post_id,
+            stored_user_stored_post: {
+                stored_user: id,
+                stored_post: post_id,
+            },
         },
+        
     })
     .catch((err) => {
         throw new Error(err);
@@ -114,7 +117,7 @@ export async function insertFollowing(id, user_nick) {
             user_nick,
         },
         select: {
-            id,
+            id: true,
         },
     })
     .catch((err) => {
@@ -124,7 +127,7 @@ export async function insertFollowing(id, user_nick) {
     await prisma.follow.create({
         data: {
             follower_id: id,
-            following_id: findPostUser,
+            following_id: findFollowUser.id,
         },
     })
     .catch((err) => {
@@ -138,7 +141,7 @@ export async function deleteFollowing(id, user_nick) {
             user_nick,
         },
         select: {
-            id,
+            id: true,
         },
     })
     .catch((err) => {
@@ -146,9 +149,11 @@ export async function deleteFollowing(id, user_nick) {
     });
 
     await prisma.follow.delete({
-        data: {
-            follower_id: id,
-            following_id: findPostUser,
+        where: {
+            follower_id_following_id: {
+                follower_id: id,
+                following_id: findFollowUser.id,
+            },
         },
     })
     .catch((err) => {
