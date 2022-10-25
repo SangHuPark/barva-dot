@@ -82,7 +82,7 @@ export async function savePost(req, res) {
     const post_id = req.body.post_id;
 
     try {
-        await userModel.insertSavePost(id, parseInt(post_id));
+        await userModel.insertSavePost(id, post_id);
 
         return res.json(util.makeReply(reply, true, 200, '게시글이 저장되었습니다.'));
     } catch (err) {
@@ -97,7 +97,7 @@ export async function cancelSavePost(req, res) {
     const post_id = req.body.post_id;
 
     try {
-        await userModel.deleteSavePost(id, parseInt(post_id));
+        await userModel.deleteSavePost(id, post_id);
 
         return res.json(util.makeReply(reply, true, 200, '게시글 저장을 취소하였습니다.'));
     } catch (err) {
