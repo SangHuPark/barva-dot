@@ -25,6 +25,7 @@ model User {
   save_user Save_post[]
   follower_user Follow[] @relation("follower") 
   following_user Follow[] @relation("following")
+  likes_user Like[]
 }
 
 model Post {
@@ -43,6 +44,17 @@ model Post {
 
   comments_post Comment[]
   save_posts Save_post[]
+  likes_user Like[]
+}
+
+model Like {
+  like_users User @relation(fields: [like_user], references: [id])
+  like_user Int
+
+  like_posts Post @relation(fields: [like_post], references: [post_id])
+  like_post Int
+
+  @@id(fields: [like_user, like_post])
 }
 
 model Comment {
