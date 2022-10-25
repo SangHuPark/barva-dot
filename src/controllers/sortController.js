@@ -25,6 +25,8 @@ export async function newestCheckerboard(req, res) {
 }
 
 export async function newestSingle(req, res) {
+    const id = req.decoded.id;
+    
     try {
         const singleResult = await sortModel.importNewestSingle();
         
