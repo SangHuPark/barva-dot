@@ -13,4 +13,7 @@ export default async (app) => {
     route.get('/userCheckerboard', userController.userCheckerboard);
     route.get('/userSingle', userController.userSingle);
     route.post('/savePost', userController.savePost);
+    route.post('/cancelSavePost', userController.cancelSavePost);
+    route.post('/addFollowing', userController.addFollowing);
+    route.post('/cancelFollowing', userController.cancelFollowing);
 }
