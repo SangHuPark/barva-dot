@@ -20,6 +20,54 @@ export async function myProfile(req, res) {
     }
 }
 
+export async function myFollowerList(req, res) {
+    const id = req.decoded.id;
+
+    try {
+        const { myFollowerResult, myFollowingResult } = await sortModel.importMyFollower(id);
+
+        /** 만약 팔로워가 더 많은 경우? 팔로잉이 더 많은 경우?
+        if ( myFollowerList.length >= myFollowingList.length ) {
+            for (let i = 0; i < myFollowerList.length; i++) {
+                if ( myFollowerList[i].follower_id === myFollowingList[i].following_id)
+                    myFollowerResult[i].isFollowing = true;
+                else
+                    myFollowerResult[i].isFollowing = false;
+            }
+        } else {
+            for (let i = 0; i < myFollowingList.length; i++)
+
+        } */
+
+        for ( let i = 0; i < myFollowingResult.length; i++ ) {
+            if ( myFollowingResult[i].follower_id === myFollowerResult[i].following_id )
+                myFollowerResult[i].isFollowing = true;
+            else
+                myFollowerResult[i].isFollowing = false;
+
+            delete myFollowingResult[i].follower_id;
+        }
+
+        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로워 목록입니다.', { myFollowerResult }));
+    } catch (err) {
+        console.log(err);
+        
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function myFollowingList(req, res) {
+    const id = req.decoded.id;
+
+    try {
+
+    } catch (err) {
+        console.log(err);
+        
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
 // 소개글 설정
 export async function setProfileIntro(req, res) {
     const user_id = req.decoded.user_id;
