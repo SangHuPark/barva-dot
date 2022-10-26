@@ -282,22 +282,12 @@ export async function importOtherSingle(user_nick) {
     return singleResult;
 }
 
-export async function importFollowerList(id, user_nick) {
-    const findIdInfo = await prisma.user.findUnique({
-        where: {
-            user_nick,
-        },
-        select: {
-            id: true,
-        },
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
+export async function importOtherFollower(user_nick) {
     const otherFollowerResult = await prisma.follow.findMany({
         where: {
-            following_id: findIdInfo.id,
+            following: {
+                user_nick,
+            },
         },
         select: {
             follower_id: true,
@@ -319,7 +309,9 @@ export async function importFollowerList(id, user_nick) {
 
     const myFollowerResult = await prisma.follow.findMany({
         where: {
-            follower_id: id,
+            follower: {
+                user_nick,
+            },
         },
         select: {
             following_id: true,

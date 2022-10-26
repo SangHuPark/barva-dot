@@ -152,10 +152,16 @@ export async function genderSingle(req, res) {
 }
 
 export async function otherProfile(req, res) {
+    const id = req.decoded.id;
     const user_nick = req.body.user_nick;
 
     try {
-        const otherProfileInfo = await sortModel.findOtherProfile(user_nick);
+        const otherProfileInfo = await sortModel.findOtherProfile(id, user_nick);
+
+        if ( otherProfileInfo.isFollowing === null )
+            otherProfileInfo.isFollowing = false;
+        else
+            otherProfileInfo.isFollowing = true;
 
         return res.json(util.dataReply(dataReply, true, 200, '요청한 회원의 프로필 정보입니다.', { otherProfileInfo }));
     } catch (err) {
@@ -220,7 +226,7 @@ export async function otherFollowerList(req, res) {
     const user_nick = req.body.user_nick;
 
     try {
-        const { otherFollowerResult, myFollowerResult } = await sortModel.importFollowerList(id, user_nick);
+        const { otherFollowerResult, myFollowerResult } = await sortModel.importOtherFollower(user_nick);
 
         for ( let i = 0; i < myFollowerResult.length; i++ ) {
             if ( myFollowerResult[i].following_id === otherFollowerResult[i].follower_id )
