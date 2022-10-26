@@ -213,9 +213,20 @@ export async function findOtherProfile(user_nick) {
         throw new Error(err);
     });
 
+    const isFollowing = await prisma.follow.findFirst({
+        where: {
+            follower_id: id,
+            following_id: profileResult.id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    })
+
     profileResult.countPost = countPost;
     profileResult.countFollower = countFollower;
     profileResult.countFollowing = countFollowing;
+    profileResult.isFollowing = isFollowing;
     delete profileResult.id;
 
     return profileResult;
