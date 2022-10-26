@@ -15,4 +15,7 @@ export default async (app) => {
     route.post('/genderCheckerboard', sortController.genderCheckerboard);
     route.post('/genderSingle', sortController.genderSingle);
     route.post('/otherProfile', sortController.otherProfile);
+    route.post('/otherCheckerboard', sortController.otherCheckerboard);
+    route.post('/otherSingle', sortController.otherSingle);
+    route.post('/otherFollowerList', sortController.otherFollowerList);
 }
