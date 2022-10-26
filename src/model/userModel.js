@@ -73,7 +73,7 @@ export async function importUserCheckerboard(id) {
             post_url: true,
         },
         orderBy: {
-            post_id: 'desc',
+            created_at: 'desc',
         },
     })
     .catch((err) => {
