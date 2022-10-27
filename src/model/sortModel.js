@@ -169,7 +169,7 @@ export async function importGenderSingle(user_gender) {
     return loadingResult;
 }
 
-export async function findOtherProfile(user_nick) {
+export async function findOtherProfile(id, user_nick) {
     const profileResult = await prisma.user.findUnique({
         where : {
             user_nick,
@@ -293,7 +293,7 @@ export async function importOtherSingle(user_nick) {
     return singleResult;
 }
 
-export async function importOtherFollower(user_nick) {
+export async function importOtherFollower(id, user_nick) {
     const otherFollowerResult = await prisma.follow.findMany({
         where: {
             following: {
@@ -320,9 +320,7 @@ export async function importOtherFollower(user_nick) {
 
     const myFollowerResult = await prisma.follow.findMany({
         where: {
-            follower: {
-                user_nick,
-            },
+            follower_id: id,
         },
         select: {
             following_id: true,

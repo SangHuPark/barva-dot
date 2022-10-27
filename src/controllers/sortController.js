@@ -226,20 +226,20 @@ export async function otherFollowerList(req, res) {
     const user_nick = req.body.user_nick;
 
     try {
-        const { otherFollowerResult, myFollowerResult } = await sortModel.importOtherFollower(user_nick);
+        const { otherFollowerResult, myFollowerResult } = await sortModel.importOtherFollower(id, user_nick);
 
-        for ( let i = 0; i < myFollowerResult.length; i++ ) {
-            if ( myFollowerResult[i].following_id === otherFollowerResult[i].follower_id )
-                otherFollowerResult[i].isFollowing = true;
-            else if ( otherFollowerResult[i].follower_id === id )
-                otherFollowerResult[i].isMe = true;
+        const otherFollower = otherFollowerResult.map((list) => {
+            if ( list.follower_id === id )
+                list.isMe = true;
+            else if ( myFollowerResult.includes(list.follower_id) )
+                list.isFollowing = true;
             else
-                otherFollowerResult[i].isFollowing = false;
+                list.isFollowing = false;
 
-            delete otherFollowerResult[i].follower_id;
-        }
+            return list;
+        });
 
-        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로워 목록입니다.', { otherFollowerResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로워 목록입니다.', { otherFollower }));
     } catch (err) {
         console.log(err);
         
