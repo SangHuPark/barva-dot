@@ -9,6 +9,7 @@ export default async (app) => {
     app.use('/user', jwt, route);
 
     route.get('/myProfile', userController.myProfile);
+    route.get('/myFollowerList', userController.myFollowerList);
     route.post('/setProfileIntro', userController.setProfileIntro);
     route.get('/userCheckerboard', userController.userCheckerboard);
     route.get('/userSingle', userController.userSingle);
