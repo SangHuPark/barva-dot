@@ -44,7 +44,7 @@ model Post {
 
   comments_post Comment[]
   save_posts Save_post[]
-  likes_user Like[]
+  likes_post Like[]
 }
 
 model Like {
