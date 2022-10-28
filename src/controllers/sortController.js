@@ -227,11 +227,14 @@ export async function otherFollowerList(req, res) {
 
     try {
         const { otherFollowerResult, myFollowingResult } = await sortModel.importOtherFollower(id, user_nick);
-
+        const box = {};
         for ( let i = 0; i < otherFollowerResult.length; i++ ) {
             // 다른 사용자의 팔로워 중 본인인지 검사
             if ( otherFollowerResult[i].follower_id === id ) {
                 otherFollowerResult[i].isMe = true;
+                Object.assign(box, otherFollowerResult[0]);
+                otherFollowerResult[0] = otherFollowerResult[i];
+                otherFollowerResult[i] = box;
                 continue;
             }
             // 본인의 팔로잉이 0인지 검사
@@ -275,10 +278,13 @@ export async function otherFollowingList(req, res) {
 
     try {
         const { otherFollowingResult, myFollowingResult } = await sortModel.importOtherFollowing(id, user_nick);
-        
+        const box = {};
         for ( let i = 0; i < otherFollowingResult.length; i++ ) {
             if ( otherFollowingResult[i].following_id === id ) {
                 otherFollowingResult[i].isMe = true;
+                Object.assign(box, otherFollowingResult[0]);
+                otherFollowingResult[0] = otherFollowingResult[i];
+                otherFollowingResult[i] = box;
                 continue;
             }
 
