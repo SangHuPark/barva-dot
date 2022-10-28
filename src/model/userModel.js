@@ -98,7 +98,7 @@ export async function importMyFollowing(id) {
         },
         select: {
             following_id: true,
-            follower: {
+            following: {
                 select: {
                     user_name: true,
                     user_nick: true,
