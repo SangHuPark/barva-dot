@@ -10,6 +10,7 @@ export default async (app) => {
 
     route.get('/myProfile', userController.myProfile);
     route.get('/myFollowerList', userController.myFollowerList);
+    route.get('/myFollowingList', userController.myFollowingList);
     route.post('/setProfileIntro', userController.setProfileIntro);
     route.get('/userCheckerboard', userController.userCheckerboard);
     route.get('/userSingle', userController.userSingle);
