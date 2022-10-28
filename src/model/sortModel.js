@@ -329,3 +329,40 @@ export async function importOtherFollower(id, user_nick) {
 
     return { otherFollowerResult, myFollowerResult };
 }
+
+export async function importOtherFollowing(id, user_nick) {
+    const otherFollowingResult = await prisma.follow.findMany({
+        where: {
+            follower: {
+                user_nick,
+            },
+        },
+        select: {
+            following_id: true,
+            following: {
+                select: {
+                    user_name: true,
+                    user_nick: true,
+                    profile_url: true,
+                },
+            },
+        },
+        orderBy: {
+            created_at: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const myFollowerResult = await prisma.follow.findMany({
+        where: {
+            follower_id: id,
+        },
+        select: {
+            following_id: true,
+        },
+    })
+
+    return { otherFollowingResult, myFollowerResult };
+}

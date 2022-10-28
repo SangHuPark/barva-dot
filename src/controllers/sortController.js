@@ -246,3 +246,29 @@ export async function otherFollowerList(req, res) {
         return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
 }
+
+export async function otherFollowingList(req, res) {
+    const id = req.decoded.id;
+    const user_nick = req.body.user_nick;
+
+    try {
+        const { otherFollowingResult, myFollowerResult } = await sortModel.importOtherFollowing(id, user_nick);
+        
+        const otherFollowing = otherFollowingResult.map((list) => {
+            if ( list.following_id === id )
+                list.isMe = true;
+            else if ( myFollowerResult.includes(list.following_id) )
+                list.isFollowing = true;
+            else
+                list.isFollowing = false;
+
+            return list;
+        });
+
+        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로잉 목록입니다.', { otherFollowing }));
+    } catch (err) {
+        console.log(err);
+        
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
