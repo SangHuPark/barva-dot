@@ -226,8 +226,30 @@ export async function otherFollowerList(req, res) {
     const user_nick = req.body.user_nick;
 
     try {
-        const { otherFollowerResult, myFollowerResult } = await sortModel.importOtherFollower(id, user_nick);
+        const { otherFollowerResult, myFollowingResult } = await sortModel.importOtherFollower(id, user_nick);
 
+        for ( let i = 0; i < otherFollowerResult.length; i++ ) {
+            // 다른 사용자의 팔로워 중 본인인지 검사
+            if ( otherFollowerResult[i].follower_id === id ) {
+                otherFollowerResult[i].isMe = true;
+                continue;
+            }
+            // 본인의 팔로잉이 0인지 검사
+            if ( myFollowingResult.length === 0 )
+                otherFollowerResult[i].isFollowing = false;
+            // 아닐 시, 다른 사용자의 팔로워 중 내가 팔로잉 한 사람이 있는지 검사
+            else {
+                for ( let j = 0; j < myFollowingResult.length; j++ ) {
+                    if ( myFollowingResult[j].following_id === otherFollowerResult[i].follower_id ) {
+                        otherFollowerResult[i].isFollowing = true;
+                        break;
+                    } else
+                        otherFollowerResult[i].isFollowing = false;
+                }
+            }
+        }
+
+        /*
         const otherFollower = otherFollowerResult.map((list) => {
             if ( list.follower_id === id )
                 list.isMe = true;
@@ -237,9 +259,9 @@ export async function otherFollowerList(req, res) {
                 list.isFollowing = false;
 
             return list;
-        });
+        }); */
 
-        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로워 목록입니다.', { otherFollower }));
+        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로워 목록입니다.', { otherFollowerResult }));
     } catch (err) {
         console.log(err);
         
@@ -252,8 +274,27 @@ export async function otherFollowingList(req, res) {
     const user_nick = req.body.user_nick;
 
     try {
-        const { otherFollowingResult, myFollowerResult } = await sortModel.importOtherFollowing(id, user_nick);
+        const { otherFollowingResult, myFollowingResult } = await sortModel.importOtherFollowing(id, user_nick);
         
+        for ( let i = 0; i < otherFollowingResult.length; i++ ) {
+            if ( otherFollowingResult[i].following_id === id ) {
+                otherFollowingResult[i].isMe = true;
+                continue;
+            }
+
+            if ( myFollowingResult.length === 0 )
+                otherFollowingResult[i].isFollowing = false;
+            else {
+                for ( let j = 0; j < myFollowingResult.length; j++ )
+                    if ( myFollowingResult[j].following_id === otherFollowingResult[i].following_id ) {
+                        otherFollowingResult[i].isFollowing = true;
+                        break;
+                    } else
+                        otherFollowingResult[i].isFollowing = false;
+            }
+        }
+
+        /*
         const otherFollowing = otherFollowingResult.map((list) => {
             if ( list.following_id === id )
                 list.isMe = true;
@@ -263,9 +304,9 @@ export async function otherFollowingList(req, res) {
                 list.isFollowing = false;
 
             return list;
-        });
+        }); */
 
-        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로잉 목록입니다.', { otherFollowing }));
+        return res.json(util.dataReply(dataReply, true, 200, '해당 사용자의 팔로잉 목록입니다.', { otherFollowingResult }));
     } catch (err) {
         console.log(err);
         
