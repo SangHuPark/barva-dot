@@ -46,8 +46,107 @@ export async function insertComment(id, comment, post_id) {
     })
     .catch((err) => {
         throw new Error(err);
-    })
+    });
 }
 
-/*
-export async function likePost() */
+export async function importCommentList(id, post_id) {
+    const profileImg = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            profile_url: true,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const commentResult = await prisma.comment.findMany({
+        where: {
+            target_post: post_id,
+        },
+        select: {
+            comment: true,
+            commente_users: {
+                select: {
+                    user_nick: true,
+                    profile_url: true,
+                },
+            }
+        }
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    return { profileImg, commentResult };
+}
+
+export async function insertLikePost(id, post_id) {
+    await prisma.like.create({
+        data: {
+            like_user: id,
+            like_post: post_id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const likeCount = await prisma.like.count({
+        where: {
+            like_post: post_id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    await prisma.post.update({
+        where: {
+            post_id,
+        },
+        data: {
+            likeCount,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+}
+
+export async function cancelLike(id, post_id) {
+    await prisma.like.delete({
+        where: {
+            like_user_like_post: {
+                like_user: id,
+                like_post: post_id,
+            },
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    const likeCount = await prisma.like.count({
+        where: {
+            like_post: post_id,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+
+    await prisma.post.update({
+        where: {
+            post_id,
+        },
+        data: {
+            likeCount,
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
+    });
+}

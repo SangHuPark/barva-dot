@@ -59,11 +59,47 @@ export async function commentPost(req, res) {
     }
 }
 
-/*
-export async function likePost(req, res) {
+export async function commentList(req, res) {
+    const id = req.decoded.id;
     const post_id = req.body.post_id;
 
     try {
-        await uplo
+        const { profileImg, commentResult } = await uploadModel.importCommentList(id, post_id);
+
+        return res.json(util.dataReply(dataReply, false, 200, '해당 게시글의 댓글 목록입니다.', { profileImg, commentResult }));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
     }
-} */
+}
+
+export async function likePost(req, res) {
+    const id = req.decoded.id;
+    const post_id = req.body.post_id;
+
+    try {
+        await uploadModel.insertLikePost(id, post_id);
+
+        return res.json(util.makeReply(reply, true, 200, '해당 게시글에 좋아요를 추가 하였습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}
+
+export async function cancelLikePost(req, res) {
+    const id = req.decoded.id;
+    const post_id = req.body.post_id;
+
+    try {
+        await uploadModel.cancelLike(id, post_id);
+
+        return res.json(util.makeReply(reply, true, 200, '해당 게시글에 좋아요를 취소 하였습니다.'));
+    } catch (err) {
+        console.log(err);
+
+        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
+    }
+}

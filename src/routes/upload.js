@@ -12,4 +12,7 @@ export default async (app) => {
     route.post('/setProfileImg', awsUpload.single('img'), uploadController.setProfileImg);
     route.post('/uploadPost', awsUpload.array('img'), uploadController.uploadPost);
     route.post('/commentPost', uploadController.commentPost);
+    route.post('/commentList', uploadController.commentList);
+    route.post('/likePost', uploadController.likePost);
+    route.post('/cancelLikePost', uploadController.cancelLikePost);
 }
