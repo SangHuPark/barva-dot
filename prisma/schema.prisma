@@ -62,7 +62,7 @@ model Comment {
   comment String @db.VarChar(200)
   created_at DateTime @default(now())
 
-  commente_users User @relation(fields: [commenter], references: [id])
+  comment_users User @relation(fields: [commenter], references: [id])
   commenter Int
 
   comment_posts Post @relation(fields: [target_post], references: [post_id])
