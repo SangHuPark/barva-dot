@@ -68,7 +68,7 @@ export async function importCommentList(id, post_id) {
         },
         select: {
             comment: true,
-            commente_users: {
+            comment_users: {
                 select: {
                     user_nick: true,
                     profile_url: true,
