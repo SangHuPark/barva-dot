@@ -80,6 +80,12 @@ export async function importMyFollower(id) {
         select: {
             following_id: true,
         },
+        orderBy: {
+            created_at: 'desc',
+        },
+    })
+    .catch((err) => {
+        throw new Error(err);
     })
 
     return { myFollowerResult, myFollowingResult };

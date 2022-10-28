@@ -26,16 +26,27 @@ export async function myFollowerList(req, res) {
     try {
         const { myFollowerResult, myFollowingResult } = await userModel.importMyFollower(id);
         
-        const myFollower = myFollowerResult.map((list) => {
-            if ( myFollowingResult.includes(list.follower_id) )
+        for ( let i = 0; i < myFollowerResult.length; i++ ) {
+            for ( let j = 0; j < myFollowingResult.length; j++ ) {
+                if ( myFollowingResult[j].following_id === myFollowerResult[i].follower_id ) {
+                    myFollowerResult[i].isFollowing = true;
+                    break;
+                } else
+                    myFollowerResult[i].isFollowing = false;
+            }
+        }
+
+        /*
+        const myFollower = myFollowerResult.map((list) => {   
+            if ( myFollowingResult[i].includes(list.follower_id) )
                 list.isFollowing = true;
             else
                 list.isFollowing = false;
 
             return list;
-        });
+        }); */
 
-        return res.json(util.dataReply(dataReply, true, 200, '나의 팔로워 목록입니다.', { myFollower }));
+        return res.json(util.dataReply(dataReply, true, 200, '나의 팔로워 목록입니다.', { myFollowerResult }));
     } catch (err) {
         console.log(err);
         
