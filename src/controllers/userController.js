@@ -60,6 +60,9 @@ export async function myFollowingList(req, res) {
     try {
         const myFollowingResult = await userModel.importMyFollowing(id);
 
+        for ( let i = 0; i < myFollowingResult.length; i++ )
+            myFollowingResult[i].isFollowing = false;
+
         return res.json(util.dataReply(dataReply, true, 200, '나의 팔로잉 목록입니다.', { myFollowingResult }));
     } catch (err) {
         console.log(err);
