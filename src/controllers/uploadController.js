@@ -68,7 +68,7 @@ export async function commentList(req, res) {
         
         const profile_url = profileImg.profile_url;
 
-        return res.json(util.dataReply(dataReply, false, 200, '해당 게시글의 댓글 목록입니다.', { profile_url, commentResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '해당 게시글의 댓글 목록입니다.', { profile_url, commentResult }));
     } catch (err) {
         console.log(err);
 
