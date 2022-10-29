@@ -103,7 +103,7 @@ export async function insertLikePost(id, post_id) {
         throw new Error(err);
     });
 
-    await prisma.post.update({
+    const likeResult = await prisma.post.update({
         where: {
             post_id,
         },
@@ -114,6 +114,8 @@ export async function insertLikePost(id, post_id) {
     .catch((err) => {
         throw new Error(err);
     });
+
+    return likeResult.likeCount;
 }
 
 export async function cancelLike(id, post_id) {
@@ -138,7 +140,7 @@ export async function cancelLike(id, post_id) {
         throw new Error(err);
     });
 
-    await prisma.post.update({
+    const likeResult = await prisma.post.update({
         where: {
             post_id,
         },
@@ -149,4 +151,6 @@ export async function cancelLike(id, post_id) {
     .catch((err) => {
         throw new Error(err);
     });
+
+    return likeResult.likeCount;
 }

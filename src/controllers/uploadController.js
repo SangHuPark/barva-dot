@@ -81,11 +81,9 @@ export async function likePost(req, res) {
     const post_id = req.body.post_id;
 
     try {
-        await uploadModel.insertLikePost(id, post_id);
+        const likeCount = await uploadModel.insertLikePost(id, post_id);
 
-        
-
-        return res.json(util.makeReply(reply, true, 200, '해당 게시글에 좋아요를 추가 하였습니다.'));
+        return res.json(util.dataReply(dataReply, true, 200, '해당 게시글에 좋아요를 추가 하였습니다.', { likeCount }));
     } catch (err) {
         console.log(err);
 
@@ -98,9 +96,9 @@ export async function cancelLikePost(req, res) {
     const post_id = req.body.post_id;
 
     try {
-        await uploadModel.cancelLike(id, post_id);
+        const likeCount = await uploadModel.cancelLike(id, post_id);
 
-        return res.json(util.makeReply(reply, true, 200, '해당 게시글에 좋아요를 취소 하였습니다.'));
+        return res.json(util.dataReply(dataReply, true, 200, '해당 게시글에 좋아요를 취소 하였습니다.', { likeCount }));
     } catch (err) {
         console.log(err);
 
