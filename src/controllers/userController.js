@@ -1,5 +1,6 @@
 import * as userModel from "../model/userModel.js";
 import * as util from "../function/replyFunc.js";
+import * as carving from "../function/carving.js";
 import { awsUpload } from "../function/s3-multer.js";
 
 var reply = {};
@@ -35,16 +36,6 @@ export async function myFollowerList(req, res) {
                     myFollowerResult[i].isFollowing = false;
             }
         }
-
-        /*
-        const myFollower = myFollowerResult.map((list) => {   
-            if ( myFollowingResult[i].includes(list.follower_id) )
-                list.isFollowing = true;
-            else
-                list.isFollowing = false;
-
-            return list;
-        }); */
 
         return res.json(util.dataReply(dataReply, true, 200, '나의 팔로워 목록입니다.', { myFollowerResult }));
     } catch (err) {
@@ -93,14 +84,7 @@ export async function userCheckerboard(req, res) {
 
     try {
         const checkerboardResult = await userModel.importUserCheckerboard(id);
-        
-        const emptyArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
-        
-        const checkerboardArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[i][0];
+        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 사용자 피드입니다.', { checkerboardArr }));
     } catch (err) {
@@ -116,20 +100,9 @@ export async function userSingle(req, res) {
 
     try {
         const singleResult = await userModel.importUserSingle(id);
+        const singleArr = await carving.refineUserSingle(singleResult, id);
         
-        for (let i = 0; i < singleResult.length; i++) {
-            singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
-        
-            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
-                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
-                    singleResult[i].isLike = true;
-            } else
-                singleResult[i].isLike = false;
-
-            delete singleResult[i].likes_post;
-        }
-        
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult: singleArr }));
     } catch (err) {
         console.log(err);
 
@@ -172,14 +145,7 @@ export async function savePostCheckerboard(req, res) {
 
     try {
         const checkerboardResult = await userModel.importSavePostCheckerboard(id);
-
-        const emptyArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[i].saved_posts.post_url);
-        
-        const checkerboardArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[i][0];
+        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 저장된 게시물입니다.', { checkerboardArr }));
     } catch (err) {
@@ -194,22 +160,9 @@ export async function savePostSingle(req, res) {
 
     try {
         const singleResult = await userModel.importSavePostSingle(id);
-        console.log(singleResult);
+        const singleArr = await carving.refineSavePostSingle(singleResult, id);
 
-        for (let i = 0; i < singleResult.length; i++) {
-            singleResult[i].saved_posts.post_url = JSON.parse(singleResult[i].saved_posts.post_url);
-            singleResult[i].isSave = true;
-            
-            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
-                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
-                    singleResult[i].isLike = true;
-            } else
-                singleResult[i].isLike = false;
-
-            delete singleResult[i].likes_post;
-        }
-
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 저장된 게시물입니다.', { singleResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 저장된 게시물입니다.', { singleResult: singleArr }));
     } catch (err) {
         console.log(err);
 

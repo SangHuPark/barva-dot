@@ -1,5 +1,6 @@
 import * as sortModel from "../model/sortModel.js";
 import * as util from "../function/replyFunc.js";
+import * as carving from "../function/carving.js";
 
 var reply = {};
 var dataReply = {};
@@ -7,14 +8,7 @@ var dataReply = {};
 export async function newestCheckerboard(req, res) {
     try {
         const checkerboardResult = await sortModel.importNewestCheckerboard();
-
-        const emptyArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
-        
-        const checkerboardArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[i][0];
+        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 최신순 보기 피드입니다.', { checkerboardArr }));
     } catch (err) {
@@ -29,27 +23,9 @@ export async function newestSingle(req, res) {
     
     try {
         const singleResult = await sortModel.importNewestSingle();
-        
-        for (let i = 0; i < singleResult.length; i++) {
-            singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
+        const singleArr = await carving.refineSingle(singleResult, id);
 
-            if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
-                if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
-                    singleResult[i].isSave = true;
-            } else
-                singleResult[i].isSave = false;
-
-            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
-                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
-                    singleResult[i].isLike = true;
-            } else
-                singleResult[i].isLike = false;
-
-            delete singleResult[i].save_posts;
-            delete singleResult[i].likes_post;
-        }
-
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 최신순 보기 피드입니다.', { singleResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 최신순 보기 피드입니다.', { singleResult: singleArr }));
     } catch (err) {
         console.log(err);
 
@@ -63,14 +39,7 @@ export async function colorCheckerboard(req, res) {
         const todayColor = await sortModel.importTodayColor();
 
         const checkerboardResult = await sortModel.importColorCheckerboard(todayColor);
-
-        const emptyArr = [];
-        for (leti = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
-        
-        const checkerboardArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[i][0];
+        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 사용자 피드입니다.', { checkerboardArr }));
     } catch (err) {
@@ -85,27 +54,9 @@ export async function colorSingle(req, res) {
         const todayColor = await sortModel.importTodayColor();
 
         const singleResult = await sortModel.importNewestSingle(todayColor);
-        
-        for (let i = 0; i < singleResult.length; i++) {
-            singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
-        
-            if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
-                if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
-                    singleResult[i].isSave = true;
-            } else
-                singleResult[i].isSave = false;
+        const singleArr = await carving.refineSingle(singleResult, id);
 
-            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
-                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
-                    singleResult[i].isLike = true;
-            } else
-                singleResult[i].isLike = false;
-
-            delete singleResult[i].save_posts;
-            delete singleResult[i].likes_post;
-        }
-
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult: singleArr }));
     } catch (err) {
         console.log(err);
 
@@ -118,14 +69,7 @@ export async function genderCheckerboard(req, res) {
 
     try {
         const checkerboardResult = await sortModel.importGenderCheckerboard(user_gender);
-
-        const emptyArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
-        
-        const checkerboardArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[i][0];
+        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 남/여 정렬 피드입니다.', { checkerboardArr }));
     } catch (err) {
@@ -141,27 +85,9 @@ export async function genderSingle(req, res) {
 
     try {
         const singleResult = await sortModel.importGenderSingle(user_gender);
-        
-        for (let i = 0; i < singleResult.length; i++) {
-            singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
-            
-            if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
-                if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
-                    singleResult[i].isSave = true;
-            } else
-                singleResult[i].isSave = false;
+        const singleArr = await carving.refineSingle(singleResult, id);
 
-            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
-                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
-                    singleResult[i].isLike = true;
-            } else
-                singleResult[i].isLike = false;
-
-            delete singleResult[i].save_posts;
-            delete singleResult[i].likes_post;
-        }
-
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 남/여 정렬 피드입니다.', { singleResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 남/여 정렬 피드입니다.', { singleResult: singleArr }));
     } catch (err) {
         console.log(err);
 
@@ -194,14 +120,7 @@ export async function otherCheckerboard(req, res) {
 
     try {
         const checkerboardResult = await sortModel.importOtherCheckerboard(user_nick);
-        
-        const emptyArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
-        
-        const checkerboardArr = [];
-        for (let i = 0; i < checkerboardResult.length; i++)
-            checkerboardArr[i] = emptyArr[i][0];
+        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 다른 사용자 피드입니다.', { checkerboardArr }));
     } catch (err) {
@@ -217,27 +136,9 @@ export async function otherSingle(req, res) {
 
     try {
         const singleResult = await sortModel.importOtherSingle(user_nick);
-        
-        for (let i = 0; i < singleResult.length; i++) {
-            singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
-            
-            if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
-                if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
-                    singleResult[i].isSave = true;
-            } else
-                singleResult[i].isSave = false;
+        const singleArr = await carving.refineSingle(singleResult, id);
 
-            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
-                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
-                    singleResult[i].isLike = true;
-            } else
-                singleResult[i].isLike = false;
-
-            delete singleResult[i].save_posts;
-            delete singleResult[i].likes_post;
-        }
-
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 다른 사용자 피드입니다.', { singleResult }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 다른 사용자 피드입니다.', { singleResult: singleArr }));
     } catch (err) {
         console.log(err);
         
@@ -251,14 +152,13 @@ export async function otherFollowerList(req, res) {
 
     try {
         const { otherFollowerResult, myFollowingResult } = await sortModel.importOtherFollower(id, user_nick);
-        const box = {};
+
         for ( let i = 0; i < otherFollowerResult.length; i++ ) {
             // 다른 사용자의 팔로워 중 본인인지 검사
             if ( otherFollowerResult[i].follower_id === id ) {
                 otherFollowerResult[i].isMe = true;
-                Object.assign(box, otherFollowerResult[0]);
-                otherFollowerResult[0] = otherFollowerResult[i];
-                otherFollowerResult[i] = box;
+                const item = otherFollowerResult.splice(i, 1);
+                otherFollowerResult.splice(0, 0, item[0]);
                 continue;
             }
             // 본인의 팔로잉이 0인지 검사
@@ -280,7 +180,7 @@ export async function otherFollowerList(req, res) {
         const otherFollower = otherFollowerResult.map((list) => {
             if ( list.follower_id === id )
                 list.isMe = true;
-            else if ( myFollowerResult.includes(list.follower_id) )
+            else if ( myFollowingResult.includes.call(list.follower_id) )
                 list.isFollowing = true;
             else
                 list.isFollowing = false;
@@ -302,13 +202,12 @@ export async function otherFollowingList(req, res) {
 
     try {
         const { otherFollowingResult, myFollowingResult } = await sortModel.importOtherFollowing(id, user_nick);
-        const box = {};
+        
         for ( let i = 0; i < otherFollowingResult.length; i++ ) {
             if ( otherFollowingResult[i].following_id === id ) {
                 otherFollowingResult[i].isMe = true;
-                Object.assign(box, otherFollowingResult[0]);
-                otherFollowingResult[0] = otherFollowingResult[i];
-                otherFollowingResult[i] = box;
+                const item = otherFollowingResult.splice(i, 1);
+                otherFollowingResult.splice(0, 0, item[0]);
                 continue;
             }
 
