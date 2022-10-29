@@ -39,6 +39,12 @@ export async function importNewestSingle() {
                     stored_post: true,
                 },
             },
+            likes_post: {
+                select: {
+                    like_user: true,
+                    like_post: true,
+                },
+            },
         },
         orderBy : {
             created_at: 'desc',
@@ -155,6 +161,12 @@ export async function importGenderSingle(user_gender) {
                 select: {
                     stored_user: true,
                     stored_post: true,
+                },
+            },
+            likes_post: {
+                select: {
+                    like_user: true,
+                    like_post: true,
                 },
             },
         },
@@ -279,6 +291,12 @@ export async function importOtherSingle(user_nick) {
                 select: {
                     stored_user: true,
                     stored_post: true,
+                },
+            },
+            likes_post: {
+                select: {
+                    like_user: true,
+                    like_post: true,
                 },
             },
         },

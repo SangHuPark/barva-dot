@@ -1,6 +1,6 @@
 import * as userModel from "../model/userModel.js";
 import * as util from "../function/replyFunc.js";
-import { awsUpload } from "../function/multer.js";
+import { awsUpload } from "../function/s3-multer.js";
 
 var reply = {};
 var dataReply = {};
@@ -117,8 +117,17 @@ export async function userSingle(req, res) {
     try {
         const singleResult = await userModel.importUserSingle(id);
         
-        for (let i = 0; i < singleResult.length; i++)
+        for (let i = 0; i < singleResult.length; i++) {
             singleResult[i].post_url = JSON.parse(singleResult[i].post_url);
+        
+            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
+                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
+                    singleResult[i].isLike = true;
+            } else
+                singleResult[i].isLike = false;
+
+            delete singleResult[i].likes_post;
+        }
         
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
     } catch (err) {
@@ -190,6 +199,14 @@ export async function savePostSingle(req, res) {
         for (let i = 0; i < singleResult.length; i++) {
             singleResult[i].saved_posts.post_url = JSON.parse(singleResult[i].saved_posts.post_url);
             singleResult[i].isSave = true;
+            
+            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
+                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
+                    singleResult[i].isLike = true;
+            } else
+                singleResult[i].isLike = false;
+
+            delete singleResult[i].likes_post;
         }
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 저장된 게시물입니다.', { singleResult }));

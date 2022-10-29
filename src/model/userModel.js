@@ -170,6 +170,12 @@ export async function importUserSingle(id) {
                     profile_url: true,
                 },
             },
+            likes_post: {
+                select: {
+                    like_user: true,
+                    like_post: true,
+                },
+            },
         },
         orderBy : {
             post_id: 'desc',
@@ -252,6 +258,12 @@ export async function importSavePostSingle(id) {
                         select: {
                             user_nick: true,
                             profile_url: true,
+                        },
+                    },
+                    likes_post: {
+                        select: {
+                            like_user: true,
+                            like_post: true,
                         },
                     },
                 },

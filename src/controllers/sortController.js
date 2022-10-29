@@ -36,11 +36,17 @@ export async function newestSingle(req, res) {
             if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
                 if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
                     singleResult[i].isSave = true;
-            }
-            else
+            } else
                 singleResult[i].isSave = false;
 
+            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
+                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
+                    singleResult[i].isLike = true;
+            } else
+                singleResult[i].isLike = false;
+
             delete singleResult[i].save_posts;
+            delete singleResult[i].likes_post;
         }
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 최신순 보기 피드입니다.', { singleResult }));
@@ -86,11 +92,17 @@ export async function colorSingle(req, res) {
             if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
                 if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
                     singleResult[i].isSave = true;
-            }
-            else
+            } else
                 singleResult[i].isSave = false;
 
+            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
+                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
+                    singleResult[i].isLike = true;
+            } else
+                singleResult[i].isLike = false;
+
             delete singleResult[i].save_posts;
+            delete singleResult[i].likes_post;
         }
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult }));
@@ -136,11 +148,17 @@ export async function genderSingle(req, res) {
             if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
                 if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
                     singleResult[i].isSave = true;
-            }
-            else
+            } else
                 singleResult[i].isSave = false;
 
+            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
+                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
+                    singleResult[i].isLike = true;
+            } else
+                singleResult[i].isLike = false;
+
             delete singleResult[i].save_posts;
+            delete singleResult[i].likes_post;
         }
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 남/여 정렬 피드입니다.', { singleResult }));
@@ -206,11 +224,17 @@ export async function otherSingle(req, res) {
             if (singleResult[i].save_posts.length !== 0 && singleResult[i].save_posts[0].stored_user === id) {
                 if (singleResult[i].post_id === singleResult[i].save_posts[0].stored_post)
                     singleResult[i].isSave = true;
-            }
-            else
+            } else
                 singleResult[i].isSave = false;
 
+            if (singleResult[i].likes_post.length !== 0 && singleResult[i].likes_post[0].like_user === id) {
+                if ( singleResult[i].post_id === singleResult[i].likes_post[0].like_post)
+                    singleResult[i].isLike = true;
+            } else
+                singleResult[i].isLike = false;
+
             delete singleResult[i].save_posts;
+            delete singleResult[i].likes_post;
         }
 
         return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 다른 사용자 피드입니다.', { singleResult }));
