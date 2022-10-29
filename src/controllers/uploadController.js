@@ -1,6 +1,6 @@
 import * as uploadModel from "../model/uploadModel.js";
 import * as util from "../function/replyFunc.js";
-import { awsUpload } from "../function/multer.js";
+import { awsUpload } from "../function/s3-multer.js";
 
 var reply = {};
 var dataReply = {};
@@ -82,6 +82,8 @@ export async function likePost(req, res) {
 
     try {
         await uploadModel.insertLikePost(id, post_id);
+
+        
 
         return res.json(util.makeReply(reply, true, 200, '해당 게시글에 좋아요를 추가 하였습니다.'));
     } catch (err) {
