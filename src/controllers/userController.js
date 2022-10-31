@@ -145,7 +145,7 @@ export async function savePostCheckerboard(req, res) {
 
     try {
         const checkerboardResult = await userModel.importSavePostCheckerboard(id);
-        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
+        const checkerboardArr = await carving.refineSavePostCheckerboard(checkerboardResult);
 
         return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 저장된 게시물입니다.', { checkerboardArr }));
     } catch (err) {
@@ -162,7 +162,7 @@ export async function savePostSingle(req, res) {
         const singleResult = await userModel.importSavePostSingle(id);
         const singleArr = await carving.refineSavePostSingle(singleResult, id);
 
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 저장된 게시물입니다.', { singleResult: singleArr }));
+        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 저장된 게시물입니다.', { singleArr }));
     } catch (err) {
         console.log(err);
 
