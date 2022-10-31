@@ -46,7 +46,7 @@ export async function refineSavePostSingle(singleResult, id) {
 
 export async function refineCheckerboard(checkerboardResult) {
     const emptyArr = [];
-    console.log(checkerboardResult);
+    
     for (let i = 0; i < checkerboardResult.length; i++)
         emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
         
