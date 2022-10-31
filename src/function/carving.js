@@ -38,7 +38,7 @@ export async function refineSavePostSingle(singleResult, id) {
         } else
             singleResult[i].isLike = false;
 
-        delete singleResult[i].likes_post;
+        delete singleResult[i].saved_posts.likes_post;
     }
 
     return singleResult;
@@ -46,7 +46,7 @@ export async function refineSavePostSingle(singleResult, id) {
 
 export async function refineCheckerboard(checkerboardResult) {
     const emptyArr = [];
-    
+
     for (let i = 0; i < checkerboardResult.length; i++)
         emptyArr[i] = JSON.parse(checkerboardResult[i].post_url);
         
