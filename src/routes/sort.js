@@ -10,8 +10,6 @@ export default async (app) => {
 
     route.get('/newestCheckerboard', sortController.newestCheckerboard);
     route.get('/newestSingle', sortController.newestSingle);
-    route.get('/colorCheckerboard', sortController.colorCheckerboard);
-    route.get('/colorSingle', sortController.colorSingle);
     route.post('/genderCheckerboard', sortController.genderCheckerboard);
     route.post('/genderSingle', sortController.genderSingle);
     route.post('/otherProfile', sortController.otherProfile);

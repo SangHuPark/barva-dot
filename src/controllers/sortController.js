@@ -33,37 +33,6 @@ export async function newestSingle(req, res) {
     }
 }
 
-// 오늘의 색상 관련 API
-export async function colorCheckerboard(req, res) {
-    try {
-        const todayColor = await sortModel.importTodayColor();
-
-        const checkerboardResult = await sortModel.importColorCheckerboard(todayColor);
-        const checkerboardArr = await carving.refineCheckerboard(checkerboardResult);
-
-        return res.json(util.dataReply(dataReply, true, 200, '바둑판 형식의 사용자 피드입니다.', { checkerboardArr }));
-    } catch (err) {
-        console.log(err);
-
-        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
-    }
-}
-
-export async function colorSingle(req, res) {
-    try {
-        const todayColor = await sortModel.importTodayColor();
-
-        const singleResult = await sortModel.importNewestSingle(todayColor);
-        const singleArr = await carving.refineSingle(singleResult, id);
-
-        return res.json(util.dataReply(dataReply, true, 200, '단일 게시물 형식의 사용자 피드입니다.', { singleResult: singleArr }));
-    } catch (err) {
-        console.log(err);
-
-        return res.json(util.dataReply(dataReply, false, 500, 'Server error response', { err: err.message }));
-    }
-}
-
 export async function genderCheckerboard(req, res) {
     const user_gender = req.body.user_gender;
 

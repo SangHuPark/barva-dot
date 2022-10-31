@@ -57,67 +57,6 @@ export async function importNewestSingle() {
     return loadingResult;
 }
 
-// 오늘의 색상 관련 API
-export async function importTodayColor() {
-    const todayColor = await prisma.post.findFirst({
-        select : {
-            color_extract: true,
-        },
-        orderBy : {
-            likeCount: 'desc',
-        },
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
-    return todayColor;
-}
-
-export async function importColorCheckerboard(todayColor) {
-    const loadingResult = await prisma.post.findMany({
-        where : {
-            color_extract: todayColor,
-        },
-        select : {
-            post_url: true,
-        },
-        orderBy : {
-            created_at: 'desc',
-        },
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
-    return loadingResult;
-}
-
-export async function importColorSingle(todayColor) {
-    const loadingResult = await prisma.post.findMany({
-        where : {
-            color_extract: todayColor,
-        },
-        select : {
-            post_content: true,
-            likeCount: true,
-            user_gender: true,
-            user_tall: true,
-            user_weight: true,
-            created_at: true,
-            post_url: true,
-        },
-        orderBy : {
-            created_at: 'desc',
-        },
-    })
-    .catch((err) => {
-        throw new Error(err);
-    });
-
-    return loadingResult;
-}
-
 export async function importGenderCheckerboard(user_gender) {
     const loadingResult = await prisma.post.findMany({
         where : {
