@@ -251,10 +251,6 @@ export async function findPwMail(req, res) {
             authCache.set(user_email, authNumber);
         } else
             return res.json(util.makeReply(reply, false, 313, '해당 이메일로 가입된 회원정보가 없습니다.'));
-        
-        const authNumber = await cryptoFunc.makeAuthNumber();
-        await mail.makeMail(authNumber, user_email);
-        authCache.set(user_email, authNumber);
 
         return res.json(util.dataReply(dataReply, true, 200, '인증번호가 전송되었습니다.', { authNumber }));
     } catch (err) {
