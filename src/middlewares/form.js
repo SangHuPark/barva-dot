@@ -5,7 +5,7 @@ var dataReply = {};
 
 export async function signUpForm(newUserInfo) {  
     var user_name_pattern = /^[가-힣|a-z|A-Z]+$/;
-    var user_nick_pattern = /^[가-힣|a-z|A-Z|0-9]+$/;
+    var user_nick_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
     var user_id_pattern = /^[a-z|A-Z|0-9]+$/;
     var user_pw_pattern = /^[a-z|A-Z|0-9|~!@#$%^&*()_+|<>?:{}]+$/;
     
