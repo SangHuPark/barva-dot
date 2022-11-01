@@ -240,13 +240,13 @@ export async function findPwMail(req, res) {
     authCache.del(user_email);
 
     try {
+        const authNumber = await cryptoFunc.makeAuthNumber();
         const formResult = await form.emailForm( { user_email } );
         if(formResult !== true)
             return res.json(util.dataReply(dataReply, false, 305, "이메일 형식이 올바르지 않습니다.", { err: formResult }));
 
         var enrollMailCheck = await authModel.existMailCheck(user_email);
         if(enrollMailCheck === true) {
-            const authNumber = await cryptoFunc.makeAuthNumber();
             await mail.makeMail(authNumber, user_email);
             authCache.set(user_email, authNumber);
         } else
