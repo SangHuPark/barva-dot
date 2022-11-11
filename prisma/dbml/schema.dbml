@@ -1,0 +1,103 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  user_name String [not null]
+  user_nick String [unique, not null]
+  user_id String [unique, not null]
+  user_pw String [not null]
+  pw_salt String [not null]
+  user_email String [unique, not null]
+  marketing Boolean [not null]
+  user_introduce String [default: '']
+  profile_url String [default: '']
+  created_at DateTime [default: `now()`, not null]
+  posts Post [not null]
+  comments_user Comment [not null]
+  save_user Save_post [not null]
+  follower_user Follow [not null]
+  following_user Follow [not null]
+  likes_user Like [not null]
+}
+
+Table Post {
+  post_id Int [pk, increment]
+  post_content String [not null]
+  likeCount Int [not null, default: 0]
+  color_extract String [not null, default: '']
+  post_url String [not null]
+  user_gender String [not null]
+  user_tall String [not null]
+  user_weight String [not null]
+  created_at DateTime [default: `now()`, not null]
+  post_users User [not null]
+  post_user Int [not null]
+  comments_post Comment [not null]
+  save_posts Save_post [not null]
+  likes_post Like [not null]
+}
+
+Table Like {
+  like_users User [not null]
+  like_user Int [not null]
+  like_posts Post [not null]
+  like_post Int [not null]
+
+  indexes {
+    (like_user, like_post) [pk]
+  }
+}
+
+Table Comment {
+  comment_id Int [pk, increment]
+  comment String [not null]
+  created_at DateTime [default: `now()`, not null]
+  comment_users User [not null]
+  commenter Int [not null]
+  comment_posts Post [not null]
+  target_post Int [not null]
+}
+
+Table Save_post {
+  saved_users User [not null]
+  stored_user Int [not null]
+  saved_posts Post [not null]
+  stored_post Int [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (stored_user, stored_post) [pk]
+  }
+}
+
+Table Follow {
+  follower User [not null]
+  follower_id Int [not null]
+  following User [not null]
+  following_id Int [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (follower_id, following_id) [pk]
+  }
+}
+
+Ref: Post.post_user > User.id
+
+Ref: Like.like_user > User.id
+
+Ref: Like.like_post > Post.post_id
+
+Ref: Comment.commenter > User.id
+
+Ref: Comment.target_post > Post.post_id
+
+Ref: Save_post.stored_user > User.id
+
+Ref: Save_post.stored_post > Post.post_id
+
+Ref: Follow.follower_id > User.id
+
+Ref: Follow.following_id > User.id
