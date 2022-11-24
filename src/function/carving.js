@@ -76,6 +76,5 @@ export async function refineSingle(singleResult, id) {
         delete singleResult[i].save_posts;
         delete singleResult[i].likes_post;
     }
-
     return singleResult;
 }
